@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ routing support
 import logo from "./assets/rci-logo.png";
 
 const RADIO_GREEN = "#4CAF50";
 
+// inject custom radio styles once
 const customRadioStyles = `
 .custom-radio {
   appearance: none;
@@ -33,7 +35,6 @@ if (typeof document !== "undefined" && !document.getElementById("custom-radio-st
   style.innerHTML = customRadioStyles;
   document.head.appendChild(style);
 }
-
 
 const QUESTIONS = [
   {
@@ -66,7 +67,9 @@ const QUESTIONS = [
   },
 ];
 
-export default function SurveyForm({ onSubmit }) {
+export default function ThirtyDaySurveyForm({ onSubmit }) {
+  const navigate = useNavigate(); // ✅ allows back-to-home nav
+
   const [form, setForm] = useState(
     QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {})
   );
@@ -85,20 +88,24 @@ export default function SurveyForm({ onSubmit }) {
     setSubmitted(true);
   }
 
-  if (submitted) return (
-    <div style={styles.centeredContainer}>
-      <div style={styles.thankYou}>Thank you for your feedback!</div>
-    </div>
-  );
+  if (submitted) {
+    return (
+      <div style={styles.centeredContainer}>
+        <div style={styles.thankYou}>Thank you for your feedback!</div>
+        <button
+          style={{ ...styles.button, marginTop: "1.5rem" }}
+          onClick={() => navigate("/")}
+        >
+          Back to Home
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.outer}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <img
-          src={logo}
-          alt="RCI Logo"
-          style={styles.logo}
-        />
+        <img src={logo} alt="RCI Logo" style={styles.logo} />
         <h2 style={styles.title}>30 Days After Start of Service Survey</h2>
         {QUESTIONS.map((q, idx) => (
           <div key={q.key} style={styles.questionBlock}>
@@ -109,15 +116,14 @@ export default function SurveyForm({ onSubmit }) {
               {[1, 2, 3, 4, 5].map((num) => (
                 <label key={num} style={styles.radioLabel}>
                   <input
-                     className="custom-radio"
-                     type="radio"
-                     name={q.key}
-                     value={num}
-                     checked={form[q.key] === String(num)}
-                     onChange={handleChange}
-                     required
+                    className="custom-radio"
+                    type="radio"
+                    name={q.key}
+                    value={num}
+                    checked={form[q.key] === String(num)}
+                    onChange={handleChange}
+                    required
                   />
-
                   {num}
                 </label>
               ))}
@@ -131,6 +137,13 @@ export default function SurveyForm({ onSubmit }) {
         >
           {loading ? "Submitting..." : "Submit"}
         </button>
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ ...styles.button, marginTop: "1rem", backgroundColor: "#888" }}
+        >
+          Cancel / Back
+        </button>
       </form>
     </div>
   );
@@ -140,12 +153,12 @@ export default function SurveyForm({ onSubmit }) {
 const styles = {
   outer: {
     minHeight: "100vh",
-    width: "100vw", // Ensures full width
+    width: "100vw",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     background: "#f5f6fa",
-    padding: 0, // No horizontal padding needed on desktop
+    padding: 0,
   },
   form: {
     width: "100%",
@@ -203,7 +216,7 @@ const styles = {
     fontWeight: 700,
     fontSize: "1.15rem",
     marginTop: "1.2rem",
-    backgroundColor: "#4CAF50", // RCI green
+    backgroundColor: "#4CAF50",
     color: "#fff",
     border: "none",
     cursor: "pointer",
@@ -218,6 +231,7 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    padding: "2rem",
   },
   thankYou: {
     fontWeight: 600,
