@@ -6,8 +6,9 @@ import NinetyDaySurveyForm from "./ninetyDaySurvey";
 import PreRenewalSurveyForm from "./preRenewalSurvey";
 
 // Constants for Quickbase
-const QB_REALM = "rotoloconsultants.quickbase.com";
-const QB_USER_TOKEN = "b9qytm_ppjb_0_8znjjguci98qcnyffg8ddrjpa7";
+const QB_REALM = import.meta.env.VITE_QB_REALM;
+const QB_USER_TOKEN = import.meta.env.VITE_QB_USER_TOKEN;
+
 
 // Field maps per survey
 const FIELD_MAPS = {
@@ -63,6 +64,7 @@ function buildQuickbaseSender(tableId, fieldMap) {
       },
       body: JSON.stringify(qbData),
     });
+
 
     if (!response.ok) {
       alert("There was an error submitting your survey.");
