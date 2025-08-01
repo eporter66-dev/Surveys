@@ -14,9 +14,9 @@ const SURVEY_CSV_FILES = {
 };
 
 const SURVEY_LINKS = {
-  Thirty: "https://surveys-five.vercel.app/thirtyDayStart",
-  Ninety: "https://surveys-five.vercel.app/ninetyDaySurvey",
-  "Pre-Renew": "https://surveys-five.vercel.app/preRenewalSurvey",
+  Thirty: "https://surveys-eporter-6538-elizabeth-porters-projects.vercel.app/thirtyDayStart",
+  Ninety: "https://surveys-eporter-6538-elizabeth-porters-projects.vercel.app/ninetyDaySurvey",
+  "Pre-Renew": "https://surveys-eporter-6538-elizabeth-porters-projects.vercel.app/preRenewalSurvey",
 };
 
 export default async function handler(req, res) {
