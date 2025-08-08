@@ -4,6 +4,7 @@ import path from 'path';
 import { parse } from 'csv-parse/sync';
 import sgMail from '@sendgrid/mail';
 
+console.log("SendGrid key starts with:", process.env.SENDGRID_API_KEY?.slice(0, 3));
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const SURVEY_CSV_FILES = {
