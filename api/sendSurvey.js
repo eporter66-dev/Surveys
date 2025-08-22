@@ -13,7 +13,7 @@ const SURVEY_CSV_FILES = {
 };
 
 const SURVEY_LINKS = {
-  Thirty: 'https://surveys-five.vercel.app/survey-30day',
+  Thirty: 'https://https://surveys-five.vercel.app/survey-30day',
   Ninety: 'https://surveys-five.vercel.app/survey-90day',
   'Pre-Renew': 'https://surveys-five.vercel.app/survey-prerenewal',
 };
