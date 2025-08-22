@@ -4,9 +4,8 @@
     "api/sendSurvey.js": { "includeFiles": "data/**" },
     "api/listData.js":   { "includeFiles": "data/**" }
   },
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/" }
+  "rewrites": [
+    { "source": "/api/:match*", "destination": "/api/:match*" },
+    { "source": "/(.*)",        "destination": "/" }
   ]
 }
