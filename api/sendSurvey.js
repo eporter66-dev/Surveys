@@ -1,81 +1,69 @@
-// api/sendSurveyEmails.js  (Vercel serverless function, ESM)
+// /api/sendSurveyEmails.js
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';
 import sgMail from '@sendgrid/mail';
 
+console.log("SendGrid key starts with:", process.env.SENDGRID_API_KEY?.slice(0, 3));
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Map CSV filenames by group
 const SURVEY_CSV_FILES = {
-  Thirty: 'thirty.csv',
-  Ninety: 'ninety.csv',
-  'Pre-Renew': 'prerenew.csv',
-  Yearly: 'yearly.csv',
+  Thirty: "thirty.csv",
+  Ninety: "ninety.csv",
+  "Pre-Renew": "prerenew.csv",
+  Yearly: "yearly.csv"
 };
 
-// Links to include in the email body
 const SURVEY_LINKS = {
-  Thirty: 'https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/thirtyDayStart',
-  Ninety: 'https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/ninetyDaySurvey',
-  'Pre-Renew': 'https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/preRenewalSurvey',
-  Yearly: 'https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/yearlySurvey',
+  Thirty: "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/thirtyDayStart",
+  Ninety: "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/ninetyDaySurvey",
+  "Pre-Renew": "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/preRenewalSurvey",
+  Yearly: "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/yearlySurvey" // if needed
 };
+
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
   try {
-    // Read optional ?type=Ninety filter from query string
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const typeFilter = url.searchParams.get('type'); // optional
-
-    // Keep your CSVs in /data at the repo root, or set SURVEY_BASE_PATH
     const basePath = process.env.SURVEY_BASE_PATH || path.join(process.cwd(), 'data');
+    let totalEmailsSent = 0;
 
-    const entries = typeFilter
-      ? Object.entries(SURVEY_CSV_FILES).filter(([t]) => t === typeFilter)
-      : Object.entries(SURVEY_CSV_FILES);
-
-    let totalSent = 0;
-
-    for (const [type, filename] of entries) {
+    for (const [type, filename] of Object.entries(SURVEY_CSV_FILES)) {
       const filePath = path.join(basePath, filename);
       if (!fs.existsSync(filePath)) continue;
 
       const content = fs.readFileSync(filePath, 'utf8');
-      const records = parse(content, { columns: true, skip_empty_lines: true });
+      const records = parse(content, {
+        columns: true,
+        skip_empty_lines: true
+      });
 
       const surveyLink = SURVEY_LINKS[type];
       const results = await Promise.allSettled(
-        records.map(async (row) => {
-          const name = row['Property Name'];
-          const email = row['Contact Email'];
+        records.map(async ({ "Property Name": name, "Contact Email": email }) => {
           if (!email) return;
 
-          await sgMail.send({
+          const msg = {
             to: email,
-            from: 'serviceupdate@rotoloconsultants.com', // must be a verified sender/domain in SendGrid
+            from: 'serviceupdate@rotoloconsultants.com', // ✅ Replace with verified sender
             subject: `Your ${type} Survey is Ready`,
             html: `
-              <p>Hi ${name || 'there'},</p>
+              <p>Hi ${name},</p>
               <p>Please take a moment to complete your <strong>${type}</strong> survey:</p>
               <p><a href="${surveyLink}">${surveyLink}</a></p>
               <p>Thank you!</p>
-            `,
-          });
+            `
+          };
+          await sgMail.send(msg);
         })
       );
 
-      totalSent += results.filter(r => r.status === 'fulfilled').length;
+      const successCount = results.filter(r => r.status === 'fulfilled').length;
+      totalEmailsSent += successCount;
     }
 
-    return res.status(200).json({ status: 'Emails sent', count: totalSent });
+    res.status(200).json({ status: "Emails sent", count: totalEmailsSent });
   } catch (err) {
-    console.error('❌ Email dispatch error:', err);
-    return res.status(500).json({ error: 'Failed to send survey emails', detail: err.message });
+    console.error("❌ Email dispatch error:", err);
+    res.status(500).json({ error: "Failed to send survey emails", detail: err.message });
   }
 }
