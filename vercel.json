@@ -1,6 +1,12 @@
 {
   "version": 2,
   "functions": {
-    "api/sendSurvey.js": { "includeFiles": "data/**" }
-  }
+    "api/sendSurvey.js": { "includeFiles": "data/**" },
+    "api/listData.js":   { "includeFiles": "data/**" }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/" }
+  ]
 }
