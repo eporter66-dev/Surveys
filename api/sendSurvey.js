@@ -15,11 +15,11 @@ const SURVEY_CSV_FILES = {
 };
 
 const SURVEY_LINKS = {
-  Thirty: "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/thirtyDayStart",
-  Ninety: "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/ninetyDaySurvey",
-  "Pre-Renew": "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/preRenewalSurvey",
-  Yearly: "https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/yearlySurvey" // if needed
+  Thirty: "https://surveys-five.vercel.app/survey-30day",
+  Ninety: "https://surveys-five.vercel.app/survey-90day",
+  "Pre-Renew": "https://surveys-five.vercel.app/survey-prerenewal"
 };
+
 
 
 export default async function handler(req, res) {
