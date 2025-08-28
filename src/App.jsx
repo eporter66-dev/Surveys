@@ -7,7 +7,7 @@ import PreRenewalSurveyForm from "./preRenewalSurvey";
 
 // Constants for Quickbase
 const QB_REALM = import.meta.env.VITE_QB_REALM;
-const QB_USER_TOKEN = import.meta.env.VITE_QB_USER_TOKEN;
+const QUICKBASE_TOKEN = import.meta.env.VITE_QB_USER_TOKEN;
 
 
 // Field maps per survey
