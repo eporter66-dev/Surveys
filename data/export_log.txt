@@ -11,3 +11,29 @@
 [2025-08-28 11:35:52] ⚠️ Skipping unknown survey type for: OSH Investments < LLC>
 [2025-08-28 11:35:52] ⚠️ Skipping unknown survey type for: Biencar Investments 2 < LLC>
 [2025-08-28 11:35:52] ✅ Export complete. CSV files written to /home/liz/Desktop/My Projects/quickbase-survey/data
+[2025-08-28 14:31:54] 🚀 Starting survey export...
+[2025-08-28 14:31:54] 📡 Querying Quickbase...
+[2025-08-28 14:31:58] 🧪 Processing response...
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: Breakfast Point Medical Park Condominium Association < Inc.>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: Lucas < Sue Ellen & Mike>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: Ochsner Clinic-800 Metairie Rd. NO < LA>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: CPG Oxmoor Commons III < LLC>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: The Claiborne at Gulfport Highlands < LLC>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: Baton Rouge Vet Center < LLC>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: Turnberry Villas Condominiums Association < Inc.>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: OSH Investments < LLC>
+[2025-08-28 14:31:58] ⚠️ Skipping unknown survey type for: Biencar Investments 2 < LLC>
+[2025-08-28 14:31:58] ✅ Export complete. CSV files written to /home/liz/Desktop/My Projects/quickbase-survey/data
+[2025-08-28 14:40:29] 🚀 Starting survey export...
+[2025-08-28 14:40:29] 📡 Querying Quickbase...
+[2025-08-28 14:40:32] 🧪 Processing response...
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: Breakfast Point Medical Park Condominium Association < Inc.>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: Lucas < Sue Ellen & Mike>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: Ochsner Clinic-800 Metairie Rd. NO < LA>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: CPG Oxmoor Commons III < LLC>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: The Claiborne at Gulfport Highlands < LLC>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: Baton Rouge Vet Center < LLC>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: Turnberry Villas Condominiums Association < Inc.>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: OSH Investments < LLC>
+[2025-08-28 14:40:32] ⚠️ Skipping unknown survey type for: Biencar Investments 2 < LLC>
+[2025-08-28 14:40:32] ✅ Export complete. CSV files written to /home/liz/Desktop/My Projects/quickbase-survey/data
