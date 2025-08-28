@@ -1,7 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "api/sendSurvey.js": { "includeFiles": "data/**" },
+    "api/SendSurvey.js": { "includeFiles": "data/**" },
     "api/listData.js":   { "includeFiles": "data/**" }
   },
   "rewrites": [
