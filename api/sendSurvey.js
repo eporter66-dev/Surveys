@@ -66,13 +66,15 @@ export default async function handler(req, res) {
 
           await sgMail.send({
             to: email,
-            from: 'serviceupdate@rotoloconsultants.com', // must be verified in SendGrid
-            subject: `Your ${type} Survey is Ready`,
+            from: 'serviceupdate@rotoloconsultants.com',
+            subject: `How’s Our Service? We'd Love Your Feedback!`,
             html: `
-              <p>Hi ${name},</p>
-              <p>Please take a moment to complete your <strong>${type}</strong> survey:</p>
+              <p>Hi,</p>
+              <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
+              <p>Click below to get started:</p>
               <p><a href="${surveyLink}">${surveyLink}</a></p>
-              <p>Thank you!</p>
+              <p>We really appreciate your feedback!</p>
+              <p>— RCI</p>
             `,
           });
         })
