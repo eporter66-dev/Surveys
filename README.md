@@ -95,8 +95,18 @@ curl https://<your-vercel-project-url>/api/sendSurvey
 Example:
 
 ```bash
-curl https://surveys-kf0j08s7j-elizabeth-porters-projects.vercel.app/api/sendSurvey
+**All Routes**
+
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey"
+
+**Test Specific Routes**
+
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey/api/sendSurvey?type=Thirty"
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey/api/sendSurvey?type=Ninety"
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey/api/sendSurvey?type=Pre-Renew"
+
 ```
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey"
 
 This will:
 - Read each survey-type CSV
