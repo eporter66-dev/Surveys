@@ -101,9 +101,9 @@ curl -X POST "https://surveys-five.vercel.app/api/sendSurvey"
 
 **Test Specific Routes**
 
-curl -X POST "https://surveys-five.vercel.app/api/sendSurvey/api/sendSurvey?type=Thirty"
-curl -X POST "https://surveys-five.vercel.app/api/sendSurvey/api/sendSurvey?type=Ninety"
-curl -X POST "https://surveys-five.vercel.app/api/sendSurvey/api/sendSurvey?type=Pre-Renew"
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey?type=Thirty"
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey?type=Ninety"
+curl -X POST "https://surveys-five.vercel.app/api/sendSurvey?type=Pre-Renew"
 
 ```
 curl -X POST "https://surveys-five.vercel.app/api/sendSurvey"

@@ -59,7 +59,7 @@ function buildQuickbaseSender(tableId, fieldMap) {
       headers: {
         "QB-Realm-Hostname": QB_REALM,
         "User-Agent": "SurveyApp",
-        "Authorization": `QB-USER-TOKEN ${QB_USER_TOKEN}`,
+        "Authorization": `QB-USER-TOKEN ${QUICKBASE_TOKEN}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(qbData),
