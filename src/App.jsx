@@ -70,6 +70,7 @@ function buildSurveySubmitter(surveyType) {
 export default function App() {
   return (
     <Routes>
+       <Route path="/" element={<SurveyHome />} />
       <Route path="/survey-30day" element={
   <ThirtyDaySurveyForm onSubmit={buildSurveySubmitter("thirtyDay")} />
 } />

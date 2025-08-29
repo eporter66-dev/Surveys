@@ -90,7 +90,7 @@ export default function ThirtyDaySurveyForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           surveyType: "thirtyDay",
-          form: { ...form, additionalFeedback },
+          form: { ...form },
         }),
       });
 
