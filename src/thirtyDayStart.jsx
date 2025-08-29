@@ -92,18 +92,50 @@ export default function ThirtyDaySurveyForm() {
   }
 
   if (submitted) {
-    return (
-      <div style={styles.centeredContainer}>
-        <div style={styles.thankYou}>Thank you for your feedback!</div>
+  return (
+    <div
+      style={{
+        position: "fixed",   // ignore #root’s max-width and padding
+        inset: 0,            // top/right/bottom/left: 0
+        display: "grid",     // grid centering
+        placeItems: "center",
+        textAlign: "center", // safeguard against global overrides
+        background: "#fff",  // ensures it looks like a full screen
+        padding: "2rem",
+      }}
+    >
+      <div>
+        <div style={{ fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50" }}>
+          Thank you for your feedback!
+        </div>
         <button
-          style={{ ...styles.button, marginTop: "1.5rem" }}
+          style={{
+            padding: "0.7rem 2.2rem",
+            borderRadius: 7,
+            fontWeight: 700,
+            fontSize: "1.15rem",
+            backgroundColor: "#4CAF50",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+            marginTop: "1.5rem",
+            boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+          }}
           onClick={() => navigate("/")}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#45a049")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#4CAF50")
+          }
         >
           Back to Home
         </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
     <div style={styles.outer}>
