@@ -25,7 +25,7 @@ const FIELD_MAPS = {
     overallServiceQuality: "15",
     reliabilityOfService: "16",
     attentionToDetail: "17",
-    communicationFollowThrough: "18",
+    communicationFollowThrough: "18", 
     professionalismOfStaff: "19",
     qualityOfReporting: "20",
     likelihoodToRecommend: "21",
@@ -47,46 +47,39 @@ function mapToQuickbase(form, fieldMap) {
   })).reduce((acc, item) => ({ ...acc, ...item }), {});
 }
 
-function buildQuickbaseSender(tableId, fieldMap) {
-  return async function sendToQuickbase(form) {
-    const qbData = {
-      to: tableId,
-      data: [mapToQuickbase(form, fieldMap)],
-    };
-
-    const response = await fetch(`https://${QB_REALM}/v1/records`, {
-      method: "POST",
+function buildSurveySubmitter(surveyType) {
+  return async function sendToServerless(form) {
+    const response = await fetch('/api/submitSurvey', {
+      method: 'POST',
       headers: {
-        "QB-Realm-Hostname": QB_REALM,
-        "User-Agent": "SurveyApp",
-        "Authorization": `QB-USER-TOKEN ${QUICKBASE_TOKEN}`,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(qbData),
+      body: JSON.stringify({ form, surveyType }),
     });
-
 
     if (!response.ok) {
       alert("There was an error submitting your survey.");
-      throw new Error("Quickbase error");
+      throw new Error("Survey submission failed");
     }
+
     return response.json();
   };
 }
 
+
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<SurveyHome />} />
       <Route path="/survey-30day" element={
-        <ThirtyDaySurveyForm onSubmit={buildQuickbaseSender("bu947ida4", FIELD_MAPS.thirtyDay)} />
-      } />
-      <Route path="/survey-90day" element={
-        <NinetyDaySurveyForm onSubmit={buildQuickbaseSender("bu947ida4", FIELD_MAPS.ninetyDay)} />
-      } />
-      <Route path="/survey-prerenewal" element={
-        <PreRenewalSurveyForm onSubmit={buildQuickbaseSender("bu947ida4", FIELD_MAPS.preRenewal)} />
-      } />
+  <ThirtyDaySurveyForm onSubmit={buildSurveySubmitter("thirtyDay")} />
+} />
+<Route path="/survey-90day" element={
+  <NinetyDaySurveyForm onSubmit={buildSurveySubmitter("ninetyDay")} />
+} />
+<Route path="/survey-prerenewal" element={
+  <PreRenewalSurveyForm onSubmit={buildSurveySubmitter("preRenewal")} />
+} />
+
     </Routes>
   );
 }
