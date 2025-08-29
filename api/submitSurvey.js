@@ -25,6 +25,8 @@ const FIELD_MAPS = {
     scopeAlignment: "10",
     proactiveCommunication: "12",
     easeOfWorking: "11",
+    propertyName: "16",
+
   },
   ninetyDay: {
     overallServiceQuality: "6",
