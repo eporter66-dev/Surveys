@@ -71,7 +71,7 @@ if (!fieldMap || !tableId) {
       method: "POST",
       headers: {
         "Authorization": `QB-USER-TOKEN ${process.env.QUICKBASE_TOKEN}`,
-        "QB-Realm-Hostname": process.env.Quickbase_Realm,
+        "QB-Realm-Hostname": process.env.LQUICKBASE_REALM,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(qbPayload),
