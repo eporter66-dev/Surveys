@@ -67,10 +67,10 @@ if (!fieldMap || !tableId) {
     };
 
 
-    const response = await fetch(`https://${process.env.Quickbase_Realm}/v1/records`, {
+    const response = await fetch(`https://${process.env.QUICKBASE_REALM}/v1/records`, {
       method: "POST",
       headers: {
-        "Authorization": `QB-USER-TOKEN ${process.env.Quickbase_Token}`,
+        "Authorization": `QB-USER-TOKEN ${process.env.QUICKBASE_TOKEN}`,
         "QB-Realm-Hostname": process.env.Quickbase_Realm,
         "Content-Type": "application/json",
       },
