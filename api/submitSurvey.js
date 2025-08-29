@@ -1,6 +1,3 @@
-// /api/submitSurvey.js
-export const config = { runtime: 'edge' }; // optional for performance
-
 const FIELD_MAPS = {
   thirtyDay: {
     communicationOnboarding: "14",
