@@ -82,12 +82,35 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    setLoading(true);
-    await onSubmit({ ...form, additionalFeedback });
-    setLoading(false);
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const response = await fetch("/api/submit-survey", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        surveyType: "ninetyDay",
+        formData: { ...form, additionalFeedback },
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Submission failed");
+    }
+
     setSubmitted(true);
+  } catch (error) {
+    alert(error.message || "Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
   }
+}
+
 
   if (submitted) {
     return (

@@ -67,7 +67,7 @@ const QUESTIONS = [
   },
 ];
 
-export default function PreRenewalSurveyForm({ onSubmit }) {
+export default function PreRenewalSurveyForm() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState(
@@ -84,9 +84,29 @@ export default function PreRenewalSurveyForm({ onSubmit }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    await onSubmit({ ...form, suggestions });
-    setLoading(false);
-    setSubmitted(true);
+
+    try {
+      const response = await fetch("/api/submit-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          surveyType: "preRenewal",
+          formData: { ...form, suggestions },
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Submission failed");
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      alert(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {

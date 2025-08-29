@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ routing support
+import { useNavigate } from "react-router-dom";
 import logo from "./assets/rci-logo.png";
 
 const RADIO_GREEN = "#4CAF50";
 
-// inject custom radio styles once
+// Inject custom radio styles once
 const customRadioStyles = `
 .custom-radio {
   appearance: none;
@@ -67,8 +67,8 @@ const QUESTIONS = [
   },
 ];
 
-export default function ThirtyDaySurveyForm({ onSubmit }) {
-  const navigate = useNavigate(); // ✅ allows back-to-home nav
+export default function ThirtyDaySurveyForm() {
+  const navigate = useNavigate();
 
   const [form, setForm] = useState(
     QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {})
@@ -83,9 +83,29 @@ export default function ThirtyDaySurveyForm({ onSubmit }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    await onSubmit(form);
-    setLoading(false);
-    setSubmitted(true);
+
+    try {
+      const response = await fetch("/api/submit-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          surveyType: "thirtyDay",
+          formData: form,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Submission failed");
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      alert(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {

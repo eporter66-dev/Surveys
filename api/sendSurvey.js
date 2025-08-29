@@ -24,6 +24,38 @@ const getEmail = (row) =>
 const getName = (row) =>
   (row['Property Name'] || row['Name'] || row['Property'] || row['name'] || 'there').trim();
 
+async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
+  const payload = {
+    to: process.env.QB_SURVEY_LOG_TABLE_ID, // You must set this env var
+    data: [
+      {
+        // Replace field IDs (e.g., "6", "7", "8") with your actual Quickbase field IDs
+        "6": { value: email },
+        "7": { value: name },
+        "8": { value: surveyType },
+        "9": { value: new Date().toISOString() }, // Optional: timestamp
+      },
+    ],
+  };
+
+  const res = await fetch(`https://${process.env.Quickbase_Realm}/v1/records`, {
+    method: "POST",
+    headers: {
+      "Authorization": `QB-USER-TOKEN ${process.env.Quickbase_Token}`,
+      "QB-Realm-Hostname": process.env.Quickbase_Realm,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("Quickbase logging failed:", errorText);
+    // Don't throw – we don't want to block emails
+  }
+}
+
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -64,19 +96,27 @@ export default async function handler(req, res) {
           if (!email) return;
           const name = getName(row);
 
-          await sgMail.send({
-            to: email,
-            from: 'serviceupdate@rotoloconsultants.com',
-            subject: `How’s Our Service? We'd Love Your Feedback!`,
-            html: `
-              <p>Hi,</p>
-              <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
-              <p>Click below to get started:</p>
-              <p><a href="${surveyLink}">${surveyLink}</a></p>
-              <p>We really appreciate your feedback!</p>
-              <p>— RCI</p>
-            `,
-          });
+         await sgMail.send({
+  to: email,
+  from: 'serviceupdate@rotoloconsultants.com',
+  subject: `How’s Our Service? We'd Love Your Feedback!`,
+  html: `
+    <p>Hi,</p>
+    <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
+    <p>Click below to get started:</p>
+    <p><a href="${surveyLink}">${surveyLink}</a></p>
+    <p>We really appreciate your feedback!</p>
+    <p>— RCI</p>
+  `,
+});
+
+// 🔁 Add Quickbase log (non-blocking)
+await logSurveyEmailToQuickbase({
+  email,
+  name,
+  surveyType: type,
+});
+
         })
       );
 
