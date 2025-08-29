@@ -12,6 +12,13 @@ const SURVEY_CSV_FILES = {
   'Pre-Renew': 'prerenew.csv',
 };
 
+const TABLE_IDS = {
+  thirtyDay: "bvbm4zq8n",
+  ninetyDay: "bvbm47nzp",
+  preRenewal: "bvbm5bbtr",
+};
+
+
 const SURVEY_LINKS = {
   Thirty: 'https://surveys-five.vercel.app/survey-30day',
   Ninety: 'https://surveys-five.vercel.app/survey-90day',

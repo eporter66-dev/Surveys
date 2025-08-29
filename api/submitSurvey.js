@@ -1,3 +1,10 @@
+const TABLE_IDS = {
+  thirtyDay: "bvbm4zq8n",
+  ninetyDay: "bvbm47nzp",
+  preRenewal: "bvbm5bbtr",
+};
+
+
 const FIELD_MAPS = {
   thirtyDay: {
     communicationOnboarding: "14",
@@ -42,19 +49,23 @@ export default async function handler(req, res) {
   try {
     const { form, surveyType } = req.body;
 
-    if (!form || !surveyType) {
-      return res.status(400).json({ error: 'Missing form data or survey type' });
-    }
+if (!form || !surveyType) {
+  return res.status(400).json({ error: 'Missing form data or survey type' });
+}
 
-    const fieldMap = FIELD_MAPS[surveyType];
-    if (!fieldMap) {
-      return res.status(400).json({ error: 'Invalid survey type' });
-    }
+const fieldMap = FIELD_MAPS[surveyType];
+const tableId = TABLE_IDS[surveyType];
+
+if (!fieldMap || !tableId) {
+  return res.status(400).json({ error: 'Invalid survey type' });
+}
+
 
     const qbPayload = {
-      to: process.env.QB_SURVEY_RESPONSE_TABLE_ID,
+      to: tableId,
       data: [mapToQuickbase(form, fieldMap)],
     };
+
 
     const response = await fetch(`https://${process.env.Quickbase_Realm}/v1/records`, {
       method: "POST",
