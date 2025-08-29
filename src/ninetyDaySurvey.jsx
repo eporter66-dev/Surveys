@@ -242,12 +242,12 @@ const styles = {
   centeredContainer: { minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", },
   thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem", },
   centeredContainer: {
-  position: "fixed",       // full viewport, ignore #root padding/max-width
-  inset: 0,                // top/right/bottom/left = 0
+  position: "fixed",    
+  inset: 0,              
   display: "grid",
-  placeItems: "center",    // perfect vertical + horizontal centering
-  textAlign: "center",     // safeguard against global CSS
-  background: "#fff",      // optional, keeps background consistent
+  placeItems: "center",   
+  textAlign: "center",     
+  background: "#fff",    
   padding: "2rem",
 }
 };
