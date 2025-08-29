@@ -97,12 +97,15 @@ export default function PreRenewalSurveyForm() {
     return (
   <div style={styles.centeredContainer}>
     <div style={styles.thankYou}>Thank you for your feedback!</div>
-    <button
-  style={{ 
-    ...styles.button, 
-    marginTop: "1.5rem", 
-    backgroundColor: "#4CAF50", 
-    color: "#fff" 
+   <button
+  type="button"
+  style={{
+    ...styles.buttonBase,
+    width: "auto",           // ← ensure not full-width
+    display: "inline-block", // ← ignore any global block/width rules
+    minWidth: 180,           // optional
+    marginTop: "1.5rem",
+    alignSelf: "center",     // center in the flex column
   }}
   onClick={() => navigate("/")}
   onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
@@ -110,6 +113,7 @@ export default function PreRenewalSurveyForm() {
 >
   Back to Home
 </button>
+
 
   </div>
 );
@@ -175,16 +179,22 @@ export default function PreRenewalSurveyForm() {
           />
         </div>
 
-        <button type="submit" disabled={loading} style={styles.button}>
-          {loading ? "Submitting..." : "Submit"}
-        </button>
         <button
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ ...styles.button, marginTop: "1rem", backgroundColor: "#888" }}
-        >
-          Cancel / Back
-        </button>
+  type="submit"
+  disabled={loading}
+  style={{ ...styles.buttonBase, ...styles.buttonFull, marginTop: "1.2rem" }}
+>
+  {loading ? "Submitting..." : "Submit"}
+</button>
+
+<button
+  type="button"
+  onClick={() => navigate("/")}
+  style={{ ...styles.buttonBase, ...styles.buttonFull, marginTop: "1rem", backgroundColor: "#888" }}
+>
+  Cancel / Back
+</button>
+
       </form>
     </div>
   );
@@ -200,7 +210,20 @@ const styles = {
   label: { fontWeight: 500, fontSize: "1rem", marginBottom: 12, color: "#333" },
   scaleRow: { display: "flex", justifyContent: "center", gap: 18 },
   radioLabel: { display: "flex", flexDirection: "column", alignItems: "center", fontSize: 16, cursor: "pointer", gap: 4 },
-  button: { padding: "0.7rem 2.2rem", borderRadius: 7, fontWeight: 700, fontSize: "1.15rem", marginTop: "1.2rem", backgroundColor: "#4CAF50", color: "#fff", border: "none", cursor: "pointer", width: "100%", maxWidth: 220, transition: "background 0.2s", boxShadow: "0 2px 8px 0 rgba(44,62,80,0.08)" },
+  buttonBase: {
+  padding: "0.7rem 2.2rem",
+  borderRadius: 7,
+  fontWeight: 700,
+  fontSize: "1.15rem",
+  backgroundColor: "#4CAF50",
+  color: "#fff",
+  border: "none",
+  cursor: "pointer",
+  transition: "background 0.2s",
+  boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+},
+buttonFull: { width: "100%", maxWidth: 220 },
+
   centeredContainer: { minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem" },
   thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem" }
 };
