@@ -94,31 +94,47 @@ export default function PreRenewalSurveyForm() {
   }
 
   if (submitted) {
-    return (
-  <div style={styles.centeredContainer}>
-    <div style={styles.thankYou}>Thank you for your feedback!</div>
-   <button
-  type="button"
-  style={{
-    ...styles.buttonBase,
-    width: "auto",           // ← ensure not full-width
-    display: "inline-block", // ← ignore any global block/width rules
-    minWidth: 180,           // optional
-    marginTop: "1.5rem",
-    alignSelf: "center",     // center in the flex column
-  }}
-  onClick={() => navigate("/")}
-  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
-  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
->
-  Back to Home
-</button>
+  return (
+    <div
+      style={{
+        position: "fixed",   // ignore #root’s padding/max-width
+        inset: 0,            // top:0 right:0 bottom:0 left:0
+        display: "grid",
+        placeItems: "center",
+        textAlign: "center", // defend against global overrides
+        background: "#fff",  // optional, ensures full white panel
+        padding: "2rem",
+      }}
+    >
+      <div>
+        <div style={{ fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50" }}>
+          Thank you for your feedback!
+        </div>
+        <button
+          type="button"
+          style={{
+            padding: "0.7rem 2.2rem",
+            borderRadius: 7,
+            fontWeight: 700,
+            fontSize: "1.15rem",
+            backgroundColor: "#4CAF50",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+            marginTop: "1.5rem",
+            boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+          }}
+          onClick={() => navigate("/")}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
+        >
+          Back to Home
+        </button>
+      </div>
+    </div>
+  );
+}
 
-
-  </div>
-);
-
-  }
 
   return (
     <div style={styles.outer}>
@@ -223,14 +239,14 @@ const styles = {
   boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
 },
 buttonFull: { width: "100%", maxWidth: 220 },
-centeredContainer: { 
-  minHeight: "70vh", 
-  display: "flex", 
-  flexDirection: "column", 
-  alignItems: "center", 
-  justifyContent: "center", 
+centeredContainer: {
+  position: "fixed",
+  inset: 0,
+  display: "grid",
+  placeItems: "center",
+  textAlign: "center",
+  background: "#fff",
   padding: "2rem",
-  textAlign: "center",   // 👈 add this
 },
 thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem" }
 };
