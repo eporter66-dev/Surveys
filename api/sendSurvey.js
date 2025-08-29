@@ -84,8 +84,8 @@ function emailTemplate({ name, surveyUrl, type }) {
   const greetingName = name && name !== "there" ? name : "there";
   const headlineByType = {
     Thirty:     "How did your first month with RCI go?",
-    Ninety:     "90 days in — how are we doing?",
-    "Pre-Renew":"Before we renew, tell us how it’s going",
+    Ninety:     "90 days in, how are we doing?",
+    "Pre-Renew":"How are we doing?",
   }[type] || "How are we doing?";
 
   // Inline CSS w/ table layout for reliability
