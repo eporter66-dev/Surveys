@@ -85,7 +85,7 @@ export default function ThirtyDaySurveyForm() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/submit-survey", {
+      const response = await fetch("/api/submitSurvey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

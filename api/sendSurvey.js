@@ -1,84 +1,131 @@
-// /api/submitSurvey.js
+// api/sendSurveyEmails.js  (ESM on Vercel)
+import fs from 'fs';
+import path from 'path';
+import { parse } from 'csv-parse/sync';
+import sgMail from '@sendgrid/mail';
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const FIELD_MAPS = {
-  thirtyDay: {
-    communicationOnboarding: "14",
-    professionalism: "8",
-    responsiveness: "9",
-    serviceQuality: "10",
-    scopeAlignment: "11",
-    proactiveCommunication: "12",
-    easeOfWorking: "13",
-  },
-  ninetyDay: {
-    overallServiceQuality: "15",
-    reliabilityOfService: "16",
-    attentionToDetail: "17",
-    communicationFollowThrough: "18", 
-    professionalismOfStaff: "19",
-    qualityOfReporting: "20",
-    likelihoodToRecommend: "21",
-  },
-  preRenewal: {
-    reliabilityConsistency: "22",
-    serviceImprovements: "23",
-    communicationSupport: "24",
-    partnershipResponsiveness: "25",
-    qualityOfEnhancements: "26",
-    easeOfWorkingTogether: "27",
-    renewalLikelihood: "28",
-  },
+const SURVEY_CSV_FILES = {
+  Thirty: 'thirty.csv',
+  Ninety: 'ninety.csv',
+  'Pre-Renew': 'prerenew.csv',
 };
 
-function mapToQuickbase(form, fieldMap) {
-  return Object.keys(fieldMap).map(key => ({
-    [fieldMap[key]]: { value: parseInt(form[key]) },
-  })).reduce((acc, item) => ({ ...acc, ...item }), {});
+const SURVEY_LINKS = {
+  Thirty: 'https://surveys-five.vercel.app/survey-30day',
+  Ninety: 'https://surveys-five.vercel.app/survey-90day',
+  'Pre-Renew': 'https://surveys-five.vercel.app/survey-prerenewal',
+};
+
+// tolerant getters + defaults
+const getEmail = (row) =>
+  (row['Contact Email'] || row['Email'] || row['Email Address'] || row['email'] || '').trim();
+const getName = (row) =>
+  (row['Property Name'] || row['Name'] || row['Property'] || row['name'] || 'there').trim();
+
+async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
+  const payload = {
+    to: process.env.QB_SURVEY_LOG_TABLE_ID, // You must set this env var
+    data: [
+      {
+        // Replace field IDs (e.g., "6", "7", "8") with your actual Quickbase field IDs
+        "6": { value: email },
+        "7": { value: name },
+        "8": { value: surveyType },
+        "9": { value: new Date().toISOString() }, // Optional: timestamp
+      },
+    ],
+  };
+
+  const res = await fetch(`https://${process.env.Quickbase_Realm}/v1/records`, {
+    method: "POST",
+    headers: {
+      "Authorization": `QB-USER-TOKEN ${process.env.Quickbase_Token}`,
+      "QB-Realm-Hostname": process.env.Quickbase_Realm,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("Quickbase logging failed:", errorText);
+    // Don't throw – we don't want to block emails
+  }
 }
+
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    const { form, surveyType } = req.body;
+    const basePath = (() => {
+      const p = process.env.SURVEY_BASE_PATH;
+      return p ? (path.isAbsolute(p) ? p : path.join(process.cwd(), p))
+               : path.join(process.cwd(), 'data');  // repo-root /data
+    })();
 
-    if (!form || !surveyType) {
-      return res.status(400).json({ error: 'Missing form data or survey type' });
+    // optional: /api/sendSurveyEmails?type=Ninety
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const typeFilter = url.searchParams.get('type');
+
+    const entries = typeFilter
+      ? Object.entries(SURVEY_CSV_FILES).filter(([t]) => t.toLowerCase() === typeFilter.toLowerCase())
+      : Object.entries(SURVEY_CSV_FILES);
+
+    let totalEmailsSent = 0;
+
+    for (const [type, filename] of entries) {
+      const filePath = path.join(basePath, filename);
+      if (!fs.existsSync(filePath)) continue;
+
+      let content = fs.readFileSync(filePath, 'utf8');
+      if (content.charCodeAt(0) === 0xFEFF) content = content.slice(1); // strip BOM
+      const records = parse(content, { columns: true, skip_empty_lines: true, trim: true });
+
+      const surveyLink = SURVEY_LINKS[type];
+      if (!surveyLink) continue; // safety if a CSV exists with no link
+
+      const results = await Promise.allSettled(
+        records.map(async (row) => {
+          const email = getEmail(row);
+          if (!email) return;
+          const name = getName(row);
+
+         await sgMail.send({
+  to: email,
+  from: 'serviceupdate@rotoloconsultants.com',
+  subject: `How’s Our Service? We'd Love Your Feedback!`,
+  html: `
+    <p>Hi,</p>
+    <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
+    <p>Click below to get started:</p>
+    <p><a href="${surveyLink}">${surveyLink}</a></p>
+    <p>We really appreciate your feedback!</p>
+    <p>— RCI</p>
+  `,
+});
+
+// 🔁 Add Quickbase log (non-blocking)
+await logSurveyEmailToQuickbase({
+  email,
+  name,
+  surveyType: type,
+});
+
+        })
+      );
+
+      totalEmailsSent += results.filter((r) => r.status === 'fulfilled').length;
     }
 
-    const fieldMap = FIELD_MAPS[surveyType];
-    if (!fieldMap) {
-      return res.status(400).json({ error: 'Invalid survey type' });
-    }
-
-    const qbPayload = {
-      to: process.env.QB_SURVEY_RESPONSE_TABLE_ID,
-      data: [mapToQuickbase(form, fieldMap)],
-    };
-
-    const response = await fetch(`https://${process.env.Quickbase_Realm}/v1/records`, {
-      method: "POST",
-      headers: {
-        "Authorization": `QB-USER-TOKEN ${process.env.Quickbase_Token}`,
-        "QB-Realm-Hostname": process.env.Quickbase_Realm,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(qbPayload),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Quickbase submission failed:", errorText);
-      return res.status(500).json({ error: 'Quickbase submission failed' });
-    }
-
-    const json = await response.json();
-    return res.status(200).json({ status: 'Success', result: json });
-  } catch (error) {
-    console.error('Submission error:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(200).json({ status: 'Emails sent', count: totalEmailsSent });
+  } catch (err) {
+    console.error('❌ Email dispatch error:', err);
+    return res.status(500).json({ error: 'Failed to send survey emails', detail: err.message });
   }
 }
