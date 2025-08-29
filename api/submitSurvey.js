@@ -35,6 +35,7 @@ const FIELD_MAPS = {
     qualityOfReporting: "11",
     likelihoodToRecommend: "12",
     additionalFeedback: "13",
+    propertyName: "14",
   },
   preRenewal: {
     reliabilityConsistency: "6",
@@ -44,6 +45,7 @@ const FIELD_MAPS = {
     qualityOfEnhancements: "10",
     easeOfWorkingTogether: "11",
     renewalLikelihood: "12",
+    propertyName: "14",
   },
 };
 

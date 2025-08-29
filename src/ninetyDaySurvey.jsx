@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom"; // ⬅️ add useLocation
 import logo from "./assets/rci-logo.png";
 
 const RADIO_GREEN = "#4CAF50";
@@ -37,38 +37,29 @@ if (typeof document !== "undefined" && !document.getElementById("custom-radio-st
 }
 
 const QUESTIONS = [
-  {
-    key: "overallServiceQuality",
-    label: "The overall quality of landscape maintenance has consistently met or exceeded expectations.",
-  },
-  {
-    key: "reliabilityOfService",
-    label: "RCI has consistently delivered services according to the agreed schedule.",
-  },
-  {
-    key: "attentionToDetail",
-    label: "Crews have shown thoroughness and attention to detail during maintenance visits.",
-  },
-  {
-    key: "communicationFollowThrough",
-    label: "RCI communicates effectively and follows through on requests, concerns, and recommendations.",
-  },
-  {
-    key: "professionalismOfStaff",
-    label: "RCI staff continue to represent the company with professionalism and courtesy.",
-  },
-  {
-    key: "qualityOfReporting",
-    label: "Reports, updates, or service documentation have been timely and useful.",
-  },
-  {
-    key: "likelihoodToRecommend",
-    label: "Based on the service so far, I would recommend RCI to others.",
-  },
+  { key: "overallServiceQuality", label: "The overall quality of landscape maintenance has consistently met or exceeded expectations." },
+  { key: "reliabilityOfService",   label: "RCI has consistently delivered services according to the agreed schedule." },
+  { key: "attentionToDetail",      label: "Crews have shown thoroughness and attention to detail during maintenance visits." },
+  { key: "communicationFollowThrough", label: "RCI communicates effectively and follows through on requests, concerns, and recommendations." },
+  { key: "professionalismOfStaff", label: "RCI staff continue to represent the company with professionalism and courtesy." },
+  { key: "qualityOfReporting",     label: "Reports, updates, or service documentation have been timely and useful." },
+  { key: "likelihoodToRecommend",  label: "Based on the service so far, I would recommend RCI to others." },
 ];
 
 export default function NinetyDaySurveyForm({ onSubmit }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Read ?property=... from URL
+  const searchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  );
+  const prefilledProperty = searchParams.get("property") || "";
+
+  // State
+  const [propertyName, setPropertyName] = useState(prefilledProperty);
+  const [lockProperty, setLockProperty] = useState(Boolean(prefilledProperty)); // <-- moved after prefilledProperty
 
   const [form, setForm] = useState(
     QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {})
@@ -77,40 +68,35 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit(e) {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const response = await fetch("/api/submitSurvey", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        surveyType: "ninetyDay",
-        form: { ...form, additionalFeedback },
-      }),
-    });
+    try {
+      const response = await fetch("/api/submitSurvey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          surveyType: "ninetyDay",
+          // ⬅️ include propertyName inside form so your FIELD_MAPS can map it to QB field 14
+          form: { ...form, additionalFeedback, propertyName },
+        }),
+      });
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || "Submission failed");
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Submission failed");
+      setSubmitted(true);
+    } catch (error) {
+      alert(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setSubmitted(true);
-  } catch (error) {
-    alert(error.message || "Something went wrong. Please try again.");
-  } finally {
-    setLoading(false);
   }
-}
-
 
   if (submitted) {
     return (
@@ -131,6 +117,47 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
       <form onSubmit={handleSubmit} style={styles.form}>
         <img src={logo} alt="RCI Logo" style={styles.logo} />
         <h2 style={styles.title}>90-Day Satisfaction Survey</h2>
+
+        {/* Property field — allow prefill or manual entry */}
+      <div style={{ width: "100%", marginBottom: 16 }}>
+        <label htmlFor="propertyName" style={styles.label}>Property</label>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            id="propertyName"
+            name="propertyName"
+            type="text"
+            value={propertyName}
+            onChange={(e) => setPropertyName(e.target.value)}
+            style={{
+              flex: 1,
+              borderRadius: 8,
+              padding: 8,
+              border: "1px solid #ccc",
+              marginTop: 8,
+            }}
+            readOnly={lockProperty}
+            placeholder="Enter property name"
+            required
+          />
+          {prefilledProperty && (
+            <button
+              type="button"
+              onClick={() => setLockProperty((v) => !v)}
+              style={{
+                marginTop: 8,
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: "1px solid #ccc",
+                background: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              {lockProperty ? "Edit" : "Lock"}
+            </button>
+          )}
+        </div>
+      </div>
+
         {QUESTIONS.map((q, idx) => (
           <div key={q.key} style={styles.questionBlock}>
             <div style={styles.label}>
@@ -191,95 +218,17 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
   );
 }
 
-// ---- STYLES ----
+// ---- STYLES ---- (unchanged)
 const styles = {
-  outer: {
-    minHeight: "100vh",
-    width: "100vw",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#f5f6fa",
-    padding: 0,
-  },
-  form: {
-    width: "100%",
-    maxWidth: 440,
-    margin: "0 auto",
-    padding: "2rem 1.5rem",
-    background: "#fff",
-    borderRadius: 12,
-    boxShadow: "0 4px 24px 0 rgba(44,62,80,0.12)",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  logo: {
-    width: 140,
-    maxWidth: "70vw",
-    marginBottom: 24,
-    display: "block",
-  },
-  title: {
-    textAlign: "center",
-    fontWeight: 700,
-    fontSize: "1.25rem",
-    marginBottom: 24,
-    color: "#274a25",
-    letterSpacing: 0.5,
-  },
-  questionBlock: {
-    width: "100%",
-    marginBottom: 28,
-    textAlign: "center",
-  },
-  label: {
-    fontWeight: 500,
-    fontSize: "1rem",
-    marginBottom: 12,
-    color: "#333",
-  },
-  scaleRow: {
-    display: "flex",
-    justifyContent: "center",
-    gap: 18,
-  },
-  radioLabel: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    fontSize: 16,
-    cursor: "pointer",
-    gap: 4,
-  },
-  button: {
-    padding: "0.7rem 2.2rem",
-    borderRadius: 7,
-    fontWeight: 700,
-    fontSize: "1.15rem",
-    marginTop: "1.2rem",
-    backgroundColor: "#4CAF50",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    width: "100%",
-    maxWidth: 220,
-    transition: "background 0.2s",
-    boxShadow: "0 2px 8px 0 rgba(44,62,80,0.08)",
-  },
-  centeredContainer: {
-    minHeight: "70vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "2rem",
-  },
-  thankYou: {
-    fontWeight: 600,
-    fontSize: "1.35rem",
-    color: "#4CAF50",
-    textAlign: "center",
-    marginTop: "2rem",
-  },
+  outer: { minHeight: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa", padding: 0, },
+  form: { width: "100%", maxWidth: 440, margin: "0 auto", padding: "2rem 1.5rem", background: "#fff", borderRadius: 12, boxShadow: "0 4px 24px 0 rgba(44,62,80,0.12)", display: "flex", flexDirection: "column", alignItems: "center", },
+  logo: { width: 140, maxWidth: "70vw", marginBottom: 24, display: "block", },
+  title: { textAlign: "center", fontWeight: 700, fontSize: "1.25rem", marginBottom: 24, color: "#274a25", letterSpacing: 0.5, },
+  questionBlock: { width: "100%", marginBottom: 28, textAlign: "center", },
+  label: { fontWeight: 500, fontSize: "1rem", marginBottom: 12, color: "#333", },
+  scaleRow: { display: "flex", justifyContent: "center", gap: 18, },
+  radioLabel: { display: "flex", flexDirection: "column", alignItems: "center", fontSize: 16, cursor: "pointer", gap: 4, },
+  button: { padding: "0.7rem 2.2rem", borderRadius: 7, fontWeight: 700, fontSize: "1.15rem", marginTop: "1.2rem", backgroundColor: "#4CAF50", color: "#fff", border: "none", cursor: "pointer", width: "100%", maxWidth: 220, transition: "background 0.2s", boxShadow: "0 2px 8px 0 rgba(44,62,80,0.08)", },
+  centeredContainer: { minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", },
+  thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem", },
 };

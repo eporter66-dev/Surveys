@@ -12,12 +12,6 @@ const SURVEY_CSV_FILES = {
   'Pre-Renew': 'prerenew.csv',
 };
 
-const TABLE_IDS = {
-  thirtyDay: "bvbm4zq8n",
-  ninetyDay: "bvbm47nzp",
-  preRenewal: "bvbm5bbtr",
-};
-
 
 const SURVEY_LINKS = {
   Thirty: 'https://surveys-five.vercel.app/survey-30day',
@@ -98,34 +92,51 @@ export default async function handler(req, res) {
       if (!surveyLink) continue; // safety if a CSV exists with no link
 
       const results = await Promise.allSettled(
-        records.map(async (row) => {
-          const email = getEmail(row);
-          if (!email) return;
-          const name = getName(row);
+  records.map(async (row) => {
+    const email = getEmail(row);
+    if (!email) return;
+    const name = getName(row); // <-- this is your property name per your CSVs
 
-         await sgMail.send({
-  to: email,
-  from: 'serviceupdate@rotoloconsultants.com',
-  subject: `How’s Our Service? We'd Love Your Feedback!`,
-  html: `
-    <p>Hi,</p>
-    <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
-    <p>Click below to get started:</p>
-    <p><a href="${surveyLink}">${surveyLink}</a></p>
-    <p>We really appreciate your feedback!</p>
-    <p>— RCI</p>
-  `,
-});
+    // Build a link with query params so the survey can prefill
+    const surveyUrl = new URL(surveyLink);
+    surveyUrl.searchParams.set("property", name);  // used to prefill the form's Property field
+    surveyUrl.searchParams.set("email", email);    // optional (handy for join/dedupe)
+    surveyUrl.searchParams.set("surveyType", type); // "Thirty" | "Ninety" | "Pre-Renew"
 
-// 🔁 Add Quickbase log (non-blocking)
-await logSurveyEmailToQuickbase({
-  email,
-  name,
-  surveyType: type,
-});
+    await sgMail.send({
+      to: email,
+      from: 'serviceupdate@rotoloconsultants.com',
+      subject: `How’s Our Service? We'd Love Your Feedback!`,
+      html: `
+  <p>Hi,</p>
+  <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
+  <p>Click below to get started:</p>
+  <p>
+    <a
+      href="${surveyUrl.toString()}"
+      style="
+        display:inline-block;
+        padding:12px 20px;
+        background:#4CAF50;
+        color:#ffffff !important;
+        text-decoration:none;
+        border-radius:6px;
+        font-weight:600;
+      "
+    >Start the Survey</a>
+  </p>
+  <p>We really appreciate your feedback!</p>
+  <p>— RCI</p>
+`,
 
-        })
-      );
+    });
+
+    // 🔁 Non-blocking log
+    await logSurveyEmailToQuickbase({ email, name, surveyType: type });
+  })
+);
+
+        
 
       totalEmailsSent += results.filter((r) => r.status === 'fulfilled').length;
     }
