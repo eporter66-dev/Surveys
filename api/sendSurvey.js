@@ -3,7 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';
 import sgMail from '@sendgrid/mail';
-import logo from "./assets/rci-logo.png";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -159,13 +158,10 @@ function emailTemplate({ name, surveyUrl, type }) {
             <tr>
               <td class="header">
                 <!-- If you want to swap text brand for a logo image, replace this span with <img src="https://..." width="120" alt="RCI" /> -->
-                <img
-                  src="https://surveys-five.vercel.app/rci-logo.png"
-                  alt="RCI Logo"
-                  width="140"
-                  style="display:block; margin:0 auto; border:0;"
-                />
-
+                <img src="https://surveys-five.vercel.app/rci-logo.png"
+                   alt="RCI Logo"
+                   width="140"
+                   style="display:block;border:0;outline:none;text-decoration:none;margin:0 auto;" />
               </td>
             </tr>
 
