@@ -56,6 +56,173 @@ async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
   }
 }
 
+// --- helpers: subject + html + text templates ------------------------------
+
+function subjectFor(type) {
+  const map = {
+    Thirty:     "30-Day Check-In: How’s our service?",
+    Ninety:     "90-Day Check-In: Your feedback matters",
+    "Pre-Renew":"Quick survey before renewal",
+  };
+  return map[type] || "How’s Our Service? We’d Love Your Feedback!";
+}
+
+function textTemplate({ name, surveyUrl, type }) {
+  const greeting = name && name !== "there" ? `Hi ${name},` : "Hi,";
+  return `${greeting}
+
+We’re always working to improve your experience with RCI. When you have a minute, please complete a quick ${type} survey to tell us how we’re doing.
+
+Start the survey: ${surveyUrl}
+
+We really appreciate your feedback!
+
+— RCI`;
+}
+
+function emailTemplate({ name, surveyUrl, type }) {
+  const greetingName = name && name !== "there" ? name : "there";
+  const headlineByType = {
+    Thirty:     "How did your first month with RCI go?",
+    Ninety:     "90 days in — how are we doing?",
+    "Pre-Renew":"Before we renew, tell us how it’s going",
+  }[type] || "How are we doing?";
+
+  // Inline CSS w/ table layout for reliability
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${subjectFor(type)}</title>
+  <style>
+    /* Client resets */
+    body,table,td,a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table,td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { -ms-interpolation-mode:bicubic; border:0; outline:none; text-decoration:none; }
+    table { border-collapse:collapse !important; }
+    body { margin:0; padding:0; width:100% !important; background:#f4f6f8; }
+
+    /* Container */
+    .wrapper { width:100%; background:#f4f6f8; padding:24px 12px; }
+    .container { max-width:560px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 6px 24px rgba(31,45,61,0.08); }
+
+    /* Header */
+    .header { padding:20px 24px; text-align:center; background:#ffffff; }
+    .brand { display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:700; color:#274a25; letter-spacing:.2px; }
+
+    /* Hero */
+    .hero { padding:8px 24px 0 24px; text-align:center; }
+    .headline { font-family:Arial,Helvetica,sans-serif; font-size:20px; line-height:28px; color:#111827; margin:12px 0 4px; font-weight:700; }
+    .sub { font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; color:#4b5563; margin:0 0 16px; }
+
+    /* Card */
+    .card { margin:16px 24px; padding:16px; border-radius:10px; background:#f9fbfa; border:1px solid #e5efe6; }
+    .muted { font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:20px; color:#4b5563; margin:0; }
+
+    /* CTA Button (bulletproof) */
+    .btn-wrap { padding:8px 24px 24px; text-align:center; }
+    .btn {
+      font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:700; line-height:20px;
+      color:#ffffff; text-decoration:none; display:inline-block; padding:14px 22px; border-radius:8px;
+      background:#4CAF50;
+    }
+    /* Outlook VML fallback handled inline below */
+
+    /* Footer */
+    .footer { padding:16px 24px 24px; text-align:center; }
+    .fine { font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:18px; color:#6b7280; margin:0; }
+    .link { color:#1f8bff; text-decoration:none; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { border-radius:10px; }
+      .headline { font-size:18px; line-height:26px; }
+      .btn { width:100%; }
+      .card { margin:12px; }
+      .btn-wrap { padding:8px 16px 20px; }
+    }
+  </style>
+
+  <!-- Preheader (hidden preview text) -->
+  <meta name="description" content="${headlineByType}">
+</head>
+<body>
+  <div class="wrapper">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td align="center">
+          <table role="presentation" class="container" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <!-- Header -->
+            <tr>
+              <td class="header">
+                <!-- If you want to swap text brand for a logo image, replace this span with <img src="https://..." width="120" alt="RCI" /> -->
+                <span class="brand">RCI</span>
+              </td>
+            </tr>
+
+            <!-- Hero copy -->
+            <tr>
+              <td class="hero">
+                <h1 class="headline">${headlineByType}</h1>
+                <p class="sub">Hi ${greetingName}, your input helps us serve you better. This survey takes just a minute.</p>
+              </td>
+            </tr>
+
+            <!-- Info card -->
+            <tr>
+              <td>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr><td class="card">
+                    <p class="muted">
+                      Click the button below to open your ${type} survey. It’s mobile-friendly and only a few quick questions.
+                    </p>
+                  </td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- CTA (bulletproof with VML for Outlook) -->
+            <tr>
+              <td class="btn-wrap">
+                <!--[if mso]>
+                  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${surveyUrl}" style="height:44px;v-text-anchor:middle;width:260px;" arcsize="10%" fillcolor="#4CAF50" stroke="f">
+                    <w:anchorlock/>
+                    <center style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;">
+                      Start the Survey
+                    </center>
+                  </v:roundrect>
+                <![endif]-->
+                <!--[if !mso]><!-- -->
+                <a class="btn" href="${surveyUrl}" target="_blank" rel="noopener">Start the Survey</a>
+                <!--<![endif]-->
+              </td>
+            </tr>
+
+            <!-- Secondary link + note -->
+            <tr>
+              <td class="footer">
+                <p class="fine">
+                  If the button doesn’t work, copy and paste this link into your browser:<br/>
+                  <a class="link" href="${surveyUrl}" target="_blank" rel="noopener">${surveyUrl}</a>
+                </p>
+                <p class="fine" style="margin-top:8px;">
+                  Thanks for helping us improve — we appreciate you!<br/>— The RCI Team
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>`;
+}
+
+
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -104,32 +271,13 @@ export default async function handler(req, res) {
     surveyUrl.searchParams.set("surveyType", type); // "Thirty" | "Ninety" | "Pre-Renew"
 
     await sgMail.send({
-      to: email,
-      from: 'serviceupdate@rotoloconsultants.com',
-      subject: `How’s Our Service? We'd Love Your Feedback!`,
-      html: `
-  <p>Hi,</p>
-  <p>We're always working to improve your experience with RCI. If you have a minute, please fill out a quick survey to tell us how we're doing.</p>
-  <p>Click below to get started:</p>
-  <p>
-    <a
-      href="${surveyUrl.toString()}"
-      style="
-        display:inline-block;
-        padding:12px 20px;
-        background:#4CAF50;
-        color:#ffffff !important;
-        text-decoration:none;
-        border-radius:6px;
-        font-weight:600;
-      "
-    >Start the Survey</a>
-  </p>
-  <p>We really appreciate your feedback!</p>
-  <p>— RCI</p>
-`,
+  to: email,
+  from: 'serviceupdate@rotoloconsultants.com',
+  subject: subjectFor(type),
+  html: emailTemplate({ name, surveyUrl: surveyUrl.toString(), type }),
+  text: textTemplate({ name, surveyUrl: surveyUrl.toString(), type }),
+});
 
-    });
 
     // 🔁 Non-blocking log
     await logSurveyEmailToQuickbase({ email, name, surveyType: type });
