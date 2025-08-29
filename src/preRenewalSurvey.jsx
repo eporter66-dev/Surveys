@@ -91,7 +91,7 @@ export default function PreRenewalSurveyForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           surveyType: "preRenewal",
-          formData: { ...form, suggestions },
+          form: { ...form, suggestions },
         }),
       });
 

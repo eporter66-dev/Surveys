@@ -93,7 +93,7 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
       },
       body: JSON.stringify({
         surveyType: "ninetyDay",
-        formData: { ...form, additionalFeedback },
+        form: { ...form, additionalFeedback },
       }),
     });
 
