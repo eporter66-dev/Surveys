@@ -49,11 +49,25 @@ const FIELD_MAPS = {
   },
 };
 
-function mapToQuickbase(form, fieldMap) {
-  return Object.keys(fieldMap).map(key => ({
-    [fieldMap[key]]: { value: parseInt(form[key]) },
-  })).reduce((acc, item) => ({ ...acc, ...item }), {});
+function coerceValue(v) {
+  if (v === undefined || v === null) return null;
+  if (typeof v === "string") {
+    const trimmed = v.trim();
+    if (trimmed === "") return null;
+    if (/^\d+$/.test(trimmed)) return Number(trimmed); // only pure integers become numbers
+    return trimmed; // text stays text (e.g., propertyName, suggestions)
+  }
+  return v;
 }
+
+function mapToQuickbase(form, fieldMap) {
+  const rec = {};
+  for (const [formKey, fieldId] of Object.entries(fieldMap)) {
+    rec[fieldId] = { value: coerceValue(form[formKey]) };
+  }
+  return rec;
+}
+
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
