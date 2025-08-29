@@ -223,7 +223,14 @@ const styles = {
   boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
 },
 buttonFull: { width: "100%", maxWidth: 220 },
-
-  centeredContainer: { minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem" },
-  thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem" }
+centeredContainer: { 
+  minHeight: "70vh", 
+  display: "flex", 
+  flexDirection: "column", 
+  alignItems: "center", 
+  justifyContent: "center", 
+  padding: "2rem",
+  textAlign: "center",   // 👈 add this
+},
+thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem" }
 };
