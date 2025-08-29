@@ -98,11 +98,19 @@ export default function PreRenewalSurveyForm() {
   <div style={styles.centeredContainer}>
     <div style={styles.thankYou}>Thank you for your feedback!</div>
     <button
-      style={{ ...styles.button, marginTop: "1.5rem" }}
-      onClick={() => navigate("/")}
-    >
-      Back to Home
-    </button>
+  style={{ 
+    ...styles.button, 
+    marginTop: "1.5rem", 
+    backgroundColor: "#4CAF50", 
+    color: "#fff" 
+  }}
+  onClick={() => navigate("/")}
+  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
+  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
+>
+  Back to Home
+</button>
+
   </div>
 );
 
