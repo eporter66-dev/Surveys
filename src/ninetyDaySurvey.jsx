@@ -241,13 +241,4 @@ const styles = {
   button: { padding: "0.7rem 2.2rem", borderRadius: 7, fontWeight: 700, fontSize: "1.15rem", marginTop: "1.2rem", backgroundColor: "#4CAF50", color: "#fff", border: "none", cursor: "pointer", width: "100%", maxWidth: 220, transition: "background 0.2s", boxShadow: "0 2px 8px 0 rgba(44,62,80,0.08)", },
   centeredContainer: { minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", },
   thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem", },
-  centeredContainer: {
-  position: "fixed",    
-  inset: 0,              
-  display: "grid",
-  placeItems: "center",   
-  textAlign: "center",     
-  background: "#fff",    
-  padding: "2rem",
-}
 };
