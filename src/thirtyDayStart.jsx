@@ -38,7 +38,7 @@ if (typeof document !== "undefined" && !document.getElementById("custom-radio-st
 
 const QUESTIONS = [
   { key: "communicationOnboarding", label: "The onboarding process was clear, timely, and well-communicated." },
-  { key: "professionalism", label: "RCI staff have been professional and courteous during all interactions." },
+  { key: "professionalism", label: "RCI stajjff have been professional and courteous during all interactions." },
   { key: "responsiveness", label: "Questions, concerns, or requests have been addressed promptly." },
   { key: "serviceQuality", label: "The appearance and condition of the landscaped areas meet expectations." },
   { key: "scopeAlignment", label: "The services provided align with the expectations outlined in the agreement." },
@@ -50,12 +50,18 @@ export default function ThirtyDaySurveyForm() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Read ?property=... from URL
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+
   const prefilledProperty = searchParams.get("property") || "";
+  const qEmail       = searchParams.get("email") || "";
+  const qSurveyType  = searchParams.get("surveyType") || "Thirty"; // matches sender
+  const qRecordId    = searchParams.get("recordId") || "";
+  const qAM          = searchParams.get("am") || "";
+  const qRM          = searchParams.get("rm") || "";
+  const qDM          = searchParams.get("dm") || "";
 
+  // UI state
   const [propertyName, setPropertyName] = useState(prefilledProperty);
-
   const [form, setForm] = useState(
     QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {})
   );
@@ -71,13 +77,34 @@ export default function ThirtyDaySurveyForm() {
     setLoading(true);
 
     try {
+      const payload = {
+        // Tell the API which template this is (you can also derive it server-side from the path)
+        surveyType: "thirtyDay",
+
+        // The rated questions
+        form: {
+          ...form,
+          propertyName,
+        },
+
+        // Pass-through fields (for Quickbase join/backfill)
+        meta: {
+          property: propertyName,
+          email: qEmail,
+          surveyTypeRaw: qSurveyType, // e.g., "Thirty"
+          recordId: qRecordId,
+          am: qAM,
+          rm: qRM,
+          dm: qDM,
+          // Optional: timestamp on client
+          submittedAt: new Date().toISOString(),
+        },
+      };
+
       const response = await fetch("/api/submitSurvey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          surveyType: "thirtyDay",
-          form: { ...form, propertyName }, // ⬅️ ensure propertyName is included
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
@@ -91,51 +118,76 @@ export default function ThirtyDaySurveyForm() {
     }
   }
 
-  if (submitted) {
-  return (
-    <div
-      style={{
-        position: "fixed",   // ignore #root’s max-width and padding
-        inset: 0,            // top/right/bottom/left: 0
-        display: "grid",     // grid centering
-        placeItems: "center",
-        textAlign: "center", // safeguard against global overrides
-        background: "#fff",  // ensures it looks like a full screen
-        padding: "2rem",
-      }}
-    >
-      <div>
-        <div style={{ fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50" }}>
-          Thank you for your feedback!
-        </div>
-        <button
-          style={{
-            padding: "0.7rem 2.2rem",
-            borderRadius: 7,
-            fontWeight: 700,
-            fontSize: "1.15rem",
-            backgroundColor: "#4CAF50",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            marginTop: "1.5rem",
-            boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
-          }}
-          onClick={() => navigate("/")}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "#45a049")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "#4CAF50")
-          }
-        >
-          Back to Home
-        </button>
-      </div>
-    </div>
-  );
-}
+  // Build an optional “service request” link for the thank-you page
+  const serviceRequestBase = "https://employee-safe-space.vercel.app/service-request";
+  const serviceRequestUrl = useMemo(() => {
+    const u = new URL(serviceRequestBase);
+    u.searchParams.set("clientName", propertyName || "");
+    u.searchParams.set("clientEmail", qEmail || "");
+    // pick one manager email to prefill; you can also pass all three if that form accepts it
+    const firstManager =
+      (qAM.split(",").map(s => s.trim()).find(Boolean)) ||
+      (qRM.split(",").map(s => s.trim()).find(Boolean)) ||
+      (qDM.split(",").map(s => s.trim()).find(Boolean)) || "";
+    u.searchParams.set("managerEmail", firstManager);
+    u.searchParams.set("recordId", qRecordId || "");
+    return u.toString();
+  }, [propertyName, qEmail, qAM, qRM, qDM, qRecordId]);
 
+  if (submitted) {
+    return (
+      <div style={{ position:"fixed", inset:0, display:"grid", placeItems:"center", textAlign:"center", background:"#fff", padding:"2rem" }}>
+        <div>
+          <div style={{ fontWeight:600, fontSize:"1.35rem", color:"#4CAF50" }}>
+            Thank you for your feedback!
+          </div>
+
+          {/* Optional: give them a one-click path to request service, carrying the same context */}
+          <a
+            href={serviceRequestUrl}
+            style={{
+              display: "inline-block",
+              padding: "0.7rem 2.2rem",
+              borderRadius: 7,
+              fontWeight: 700,
+              fontSize: "1.05rem",
+              backgroundColor: "#4CAF50",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              marginTop: "1rem",
+              boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+              textDecoration: "none",
+            }}
+          >
+            Submit a Service Request
+          </a>
+
+          <button
+            style={{
+              display: "block",
+              padding: "0.7rem 2.2rem",
+              borderRadius: 7,
+              fontWeight: 700,
+              fontSize: "1.05rem",
+              backgroundColor: "#888",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              marginTop: "1rem",
+              boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+              width: "100%",
+              maxWidth: 220,
+              marginInline: "auto",
+            }}
+            onClick={() => navigate("/")}
+          >
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.outer}>
@@ -152,13 +204,7 @@ export default function ThirtyDaySurveyForm() {
             type="text"
             value={propertyName}
             onChange={(e) => setPropertyName(e.target.value)}
-            style={{
-              width: "100%",
-              borderRadius: 8,
-              padding: 8,
-              border: "1px solid #ccc",
-              marginTop: 8,
-            }}
+            style={{ width:"100%", borderRadius:8, padding:8, border:"1px solid #ccc", marginTop:8 }}
             readOnly={Boolean(prefilledProperty)}
             placeholder="Enter property name"
             required
@@ -167,11 +213,9 @@ export default function ThirtyDaySurveyForm() {
 
         {QUESTIONS.map((q, idx) => (
           <div key={q.key} style={styles.questionBlock}>
-            <div style={styles.label}>
-              {idx + 1}. {q.label}
-            </div>
+            <div style={styles.label}>{idx + 1}. {q.label}</div>
             <div style={styles.scaleRow}>
-              {[1, 2, 3, 4, 5].map((num) => (
+              {[1,2,3,4,5].map((num) => (
                 <label key={num} style={styles.radioLabel}>
                   <input
                     className="custom-radio"
@@ -199,10 +243,14 @@ export default function ThirtyDaySurveyForm() {
         >
           Cancel / Back
         </button>
+
+        {/* Optional: show a tiny footnote of what we captured (for debugging) */}
+        {/* <pre style={{ fontSize: 12, opacity: 0.6 }}>{JSON.stringify({ qEmail, qSurveyType, qRecordId, qAM, qRM, qDM }, null, 2)}</pre> */}
       </form>
     </div>
   );
 }
+
 
 // ---- STYLES ----
 const styles = {
