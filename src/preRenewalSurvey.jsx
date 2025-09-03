@@ -50,16 +50,18 @@ export default function PreRenewalSurveyForm() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Read ?property=... from URL
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const prefilledProperty = searchParams.get("property") || "";
+  const qEmail      = searchParams.get("email") || "";
+  const qSurveyType = searchParams.get("surveyType") || "Pre-Renew";
+  const qRecordId   = searchParams.get("recordId") || "";
+  const qAM         = searchParams.get("am") || "";
+  const qRM         = searchParams.get("rm") || "";
+  const qDM         = searchParams.get("dm") || "";
 
-  // Track property in state
+  // State
   const [propertyName, setPropertyName] = useState(prefilledProperty);
-
-  const [form, setForm] = useState(
-    QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {})
-  );
+  const [form, setForm] = useState(QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {}));
   const [suggestions, setSuggestions] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -73,18 +75,28 @@ export default function PreRenewalSurveyForm() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/submitSurvey", {
+      const payload = {
+        surveyType: "preRenewal",           // your FIELD_MAP key
+        form: { ...form, suggestions, propertyName }, // so propertyName maps to QB
+        meta: {
+          property: propertyName,
+          email: qEmail,
+          surveyTypeRaw: qSurveyType, // "Pre-Renew"
+          recordId: qRecordId,
+          am: qAM,
+          rm: qRM,
+          dm: qDM,
+          submittedAt: new Date().toISOString(),
+        },
+      };
+
+      const res = await fetch("/api/submitSurvey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          surveyType: "preRenewal", // must match your FIELD_MAPS key
-          // include propertyName so FIELD_MAPS.preRenewal.propertyName = "14" writes to QB field 14
-          form: { ...form, suggestions, propertyName },
-        }),
+        body: JSON.stringify(payload),
       });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Submission failed");
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Submission failed");
       setSubmitted(true);
     } catch (error) {
       alert(error.message || "Something went wrong. Please try again.");
@@ -93,48 +105,56 @@ export default function PreRenewalSurveyForm() {
     }
   }
 
+  // “Request service” URL (same pattern as the other forms)
+  const serviceRequestBase = "https://employee-safe-space.vercel.app/service-request";
+  const serviceRequestUrl = useMemo(() => {
+    const u = new URL(serviceRequestBase);
+    u.searchParams.set("clientName", propertyName || "");
+    u.searchParams.set("clientEmail", qEmail || "");
+    const firstManager =
+      (qAM.split(",").map(s => s.trim()).find(Boolean)) ||
+      (qRM.split(",").map(s => s.trim()).find(Boolean)) ||
+      (qDM.split(",").map(s => s.trim()).find(Boolean)) || "";
+    u.searchParams.set("managerEmail", firstManager);
+    u.searchParams.set("recordId", qRecordId || "");
+    return u.toString();
+  }, [propertyName, qEmail, qAM, qRM, qDM, qRecordId]);
+
   if (submitted) {
-  return (
-    <div
-      style={{
-        position: "fixed",   // ignore #root’s padding/max-width
-        inset: 0,            // top:0 right:0 bottom:0 left:0
-        display: "grid",
-        placeItems: "center",
-        textAlign: "center", // defend against global overrides
-        background: "#fff",  // optional, ensures full white panel
-        padding: "2rem",
-      }}
-    >
-      <div>
-        <div style={{ fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50" }}>
-          Thank you for your feedback!
-        </div>
-        <button
-          type="button"
+    return (
+      <div style={styles.centeredContainer}>
+        <div style={styles.thankYou}>Thank you for your feedback!</div>
+
+        <a
+          href={serviceRequestUrl}
           style={{
+            display: "inline-block",
             padding: "0.7rem 2.2rem",
             borderRadius: 7,
             fontWeight: 700,
-            fontSize: "1.15rem",
+            fontSize: "1.05rem",
             backgroundColor: "#4CAF50",
             color: "#fff",
             border: "none",
             cursor: "pointer",
-            marginTop: "1.5rem",
+            marginTop: "1rem",
             boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+            textDecoration: "none",
           }}
+        >
+          Submit a Service Request
+        </a>
+
+        <button
+          type="button"
+          style={{ ...styles.buttonBase, marginTop: "1rem", backgroundColor: "#888" }}
           onClick={() => navigate("/")}
-          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
-          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
         >
           Back to Home
         </button>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   return (
     <div style={styles.outer}>
@@ -195,26 +215,21 @@ export default function PreRenewalSurveyForm() {
           />
         </div>
 
+        <button type="submit" disabled={loading} style={{ ...styles.buttonBase, width: "100%", maxWidth: 220, marginTop: "1.2rem" }}>
+          {loading ? "Submitting..." : "Submit"}
+        </button>
         <button
-  type="submit"
-  disabled={loading}
-  style={{ ...styles.buttonBase, ...styles.buttonFull, marginTop: "1.2rem" }}
->
-  {loading ? "Submitting..." : "Submit"}
-</button>
-
-<button
-  type="button"
-  onClick={() => navigate("/")}
-  style={{ ...styles.buttonBase, ...styles.buttonFull, marginTop: "1rem", backgroundColor: "#888" }}
->
-  Cancel / Back
-</button>
-
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ ...styles.buttonBase, width: "100%", maxWidth: 220, marginTop: "1rem", backgroundColor: "#888" }}
+        >
+          Cancel / Back
+        </button>
       </form>
     </div>
   );
 }
+
 
 // ---- STYLES ----
 const styles = {
