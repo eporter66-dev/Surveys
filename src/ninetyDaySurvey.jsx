@@ -50,24 +50,23 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Read ?property=... from URL
-  const searchParams = useMemo(
-    () => new URLSearchParams(location.search),
-    [location.search]
-  );
+    // Read query params (same as 30-day)
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const prefilledProperty = searchParams.get("property") || "";
+  const qEmail      = searchParams.get("email") || "";
+  const qSurveyType = searchParams.get("surveyType") || "Ninety";
+  const qRecordId   = searchParams.get("recordId") || "";
+  const qAM         = searchParams.get("am") || "";
+  const qRM         = searchParams.get("rm") || "";
+  const qDM         = searchParams.get("dm") || "";
 
   // State
   const [propertyName, setPropertyName] = useState(prefilledProperty);
-  const [lockProperty, setLockProperty] = useState(Boolean(prefilledProperty)); // <-- moved after prefilledProperty
-
-  const [form, setForm] = useState(
-    QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {})
-  );
+  const [lockProperty, setLockProperty] = useState(Boolean(prefilledProperty));
+  const [form, setForm] = useState(QUESTIONS.reduce((acc, q) => ({ ...acc, [q.key]: "" }), {}));
   const [additionalFeedback, setAdditionalFeedback] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -76,51 +75,95 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const response = await fetch("/api/submitSurvey", {
+      const payload = {
+        surveyType: "ninetyDay",
+        form: { ...form, additionalFeedback, propertyName },
+        meta: {
+          property: propertyName,
+          email: qEmail,
+          surveyTypeRaw: qSurveyType, // "Ninety"
+          recordId: qRecordId,
+          am: qAM,
+          rm: qRM,
+          dm: qDM,
+          submittedAt: new Date().toISOString(),
+        },
+      };
+
+      const res = await fetch("/api/submitSurvey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          surveyType: "ninetyDay",
-          // ⬅️ include propertyName inside form so your FIELD_MAPS can map it to QB field 14
-          form: { ...form, additionalFeedback, propertyName },
-        }),
+        body: JSON.stringify(payload),
       });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Submission failed");
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Submission failed");
       setSubmitted(true);
-    } catch (error) {
-      alert(error.message || "Something went wrong. Please try again.");
+    } catch (err) {
+      alert(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
-  if (submitted) {
-  return (
-    <div style={styles.centeredContainer}>
-      <div style={styles.thankYou}>Thank you for your feedback!</div>
-      <button
-        type="button"
-        style={{
-          ...styles.button,
-          width: "auto",           // don’t stretch full-width
-          minWidth: 180,           // optional safety
-          marginTop: "1.5rem",
-          alignSelf: "center",     // aligns in flex/grid
-        }}
-        onClick={() => navigate("/")}
-        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
-        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
-      >
-        Back to Home
-      </button>
-    </div>
-  );
-}
+  // Build the same “service request” link shown on the 30-day thank-you page
+  const serviceRequestBase = "https://employee-safe-space.vercel.app/service-request";
+  const serviceRequestUrl = useMemo(() => {
+    const u = new URL(serviceRequestBase);
+    u.searchParams.set("clientName", propertyName || "");
+    u.searchParams.set("clientEmail", qEmail || "");
+    const firstManager =
+      (qAM.split(",").map(s => s.trim()).find(Boolean)) ||
+      (qRM.split(",").map(s => s.trim()).find(Boolean)) ||
+      (qDM.split(",").map(s => s.trim()).find(Boolean)) || "";
+    u.searchParams.set("managerEmail", firstManager);
+    u.searchParams.set("recordId", qRecordId || "");
+    return u.toString();
+  }, [propertyName, qEmail, qAM, qRM, qDM, qRecordId]);
 
+  if (submitted) {
+    return (
+      <div style={styles.centeredContainer}>
+        <div style={styles.thankYou}>Thank you for your feedback!</div>
+
+        {/* Request Service CTA (same pattern as 30-day) */}
+        <a
+          href={serviceRequestUrl}
+          style={{
+            display: "inline-block",
+            padding: "0.7rem 2.2rem",
+            borderRadius: 7,
+            fontWeight: 700,
+            fontSize: "1.05rem",
+            backgroundColor: "#4CAF50",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+            marginTop: "1rem",
+            boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+            textDecoration: "none",
+          }}
+        >
+          Submit a Service Request
+        </a>
+
+        <button
+          type="button"
+          style={{
+            ...styles.button,
+            width: "auto",
+            minWidth: 180,
+            marginTop: "1rem",
+            alignSelf: "center",
+            backgroundColor: "#888",
+          }}
+          onClick={() => navigate("/")}
+        >
+          Back to Home
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.outer}>
@@ -128,53 +171,38 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
         <img src={logo} alt="RCI Logo" style={styles.logo} />
         <h2 style={styles.title}>90-Day Satisfaction Survey</h2>
 
-        {/* Property field — allow prefill or manual entry */}
-      <div style={{ width: "100%", marginBottom: 16 }}>
-        <label htmlFor="propertyName" style={styles.label}>Property</label>
-        <div style={{ display: "flex", gap: 8 }}>
-          <input
-            id="propertyName"
-            name="propertyName"
-            type="text"
-            value={propertyName}
-            onChange={(e) => setPropertyName(e.target.value)}
-            style={{
-              flex: 1,
-              borderRadius: 8,
-              padding: 8,
-              border: "1px solid #ccc",
-              marginTop: 8,
-            }}
-            readOnly={lockProperty}
-            placeholder="Enter property name"
-            required
-          />
-          {prefilledProperty && (
-            <button
-              type="button"
-              onClick={() => setLockProperty((v) => !v)}
-              style={{
-                marginTop: 8,
-                padding: "8px 12px",
-                borderRadius: 8,
-                border: "1px solid #ccc",
-                background: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              {lockProperty ? "Edit" : "Lock"}
-            </button>
-          )}
+        {/* Property (prefill + lock toggle) */}
+        <div style={{ width: "100%", marginBottom: 16 }}>
+          <label htmlFor="propertyName" style={styles.label}>Property</label>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              id="propertyName"
+              name="propertyName"
+              type="text"
+              value={propertyName}
+              onChange={(e) => setPropertyName(e.target.value)}
+              style={{ flex: 1, borderRadius: 8, padding: 8, border: "1px solid #ccc", marginTop: 8 }}
+              readOnly={lockProperty}
+              placeholder="Enter property name"
+              required
+            />
+            {prefilledProperty && (
+              <button
+                type="button"
+                onClick={() => setLockProperty(v => !v)}
+                style={{ marginTop: 8, padding: "8px 12px", borderRadius: 8, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
+              >
+                {lockProperty ? "Edit" : "Lock"}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
         {QUESTIONS.map((q, idx) => (
           <div key={q.key} style={styles.questionBlock}>
-            <div style={styles.label}>
-              {idx + 1}. {q.label}
-            </div>
+            <div style={styles.label}>{idx + 1}. {q.label}</div>
             <div style={styles.scaleRow}>
-              {[1, 2, 3, 4, 5].map((num) => (
+              {[1,2,3,4,5].map(num => (
                 <label key={num} style={styles.radioLabel}>
                   <input
                     className="custom-radio"
@@ -192,7 +220,7 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
           </div>
         ))}
 
-        {/* Feedback Prompt */}
+        {/* Freeform feedback */}
         <div style={{ width: "100%", marginTop: 24 }}>
           <label htmlFor="additionalFeedback" style={styles.label}>
             Is there anything else you’d like to share about your experience so far?
@@ -203,13 +231,7 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
             value={additionalFeedback}
             onChange={(e) => setAdditionalFeedback(e.target.value)}
             rows={4}
-            style={{
-              width: "100%",
-              borderRadius: 8,
-              padding: 8,
-              borderColor: "#ccc",
-              marginTop: 8,
-            }}
+            style={{ width: "100%", borderRadius: 8, padding: 8, borderColor: "#ccc", marginTop: 8 }}
           />
         </div>
 
@@ -227,6 +249,7 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
     </div>
   );
 }
+
 
 // ---- STYLES ---- (unchanged)
 const styles = {
