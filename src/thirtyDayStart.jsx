@@ -162,7 +162,7 @@ export default function ThirtyDaySurveyForm() {
           >
             Submit a Service Request
           </a>
-
+{/*
           <button
             style={{
               display: "block",
@@ -184,6 +184,7 @@ export default function ThirtyDaySurveyForm() {
           >
             Back to Home
           </button>
+          */}
         </div>
       </div>
     );

@@ -144,7 +144,7 @@ export default function PreRenewalSurveyForm() {
         >
           Submit a Service Request
         </a>
-
+{/*}
         <button
           type="button"
           style={{ ...styles.buttonBase, marginTop: "1rem", backgroundColor: "#888" }}
@@ -152,6 +152,7 @@ export default function PreRenewalSurveyForm() {
         >
           Back to Home
         </button>
+        */}
       </div>
     );
   }
