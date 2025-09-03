@@ -76,8 +76,8 @@ export default function PreRenewalSurveyForm() {
 
     try {
       const payload = {
-        surveyType: "preRenewal",           // your FIELD_MAP key
-        form: { ...form, suggestions, propertyName }, // so propertyName maps to QB
+        surveyType: "preRenewal",
+        form: { ...form, suggestions, propertyName },
         meta: {
           property: propertyName,
           email: qEmail,
@@ -161,6 +161,10 @@ export default function PreRenewalSurveyForm() {
       <form onSubmit={handleSubmit} style={styles.form}>
         <img src={logo} alt="RCI Logo" style={styles.logo} />
         <h2 style={styles.title}>Pre-Renewal Satisfaction Survey</h2>
+        <p style={{ textAlign: "center", marginBottom: 24, fontSize: "0.95rem", color: "#555" }}>
+          Please rate each statement on a scale from 1 to 5, where
+          <strong> 1 = Don’t Agree</strong> and <strong>5 = Strongly Agree</strong>.
+        </p>
 
         {/* Property (read-only if provided via URL) */}
         <div style={{ width: "100%", marginBottom: 16 }}>
@@ -181,21 +185,30 @@ export default function PreRenewalSurveyForm() {
         {QUESTIONS.map((q, idx) => (
           <div key={q.key} style={styles.questionBlock}>
             <div style={styles.label}>{idx + 1}. {q.label}</div>
-            <div style={styles.scaleRow}>
-              {[1, 2, 3, 4, 5].map((num) => (
-                <label key={num} style={styles.radioLabel}>
-                  <input
-                    className="custom-radio"
-                    type="radio"
-                    name={q.key}
-                    value={num}
-                    checked={form[q.key] === String(num)}
-                    onChange={handleChange}
-                    required
-                  />
-                  {num}
-                </label>
-              ))}
+
+            {/* Scale with end labels */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
+              <span style={{ fontSize: "0.8rem", color: "#666" }}>1 (Don’t Agree)</span>
+
+              <div style={styles.scaleRow}>
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <label key={num} style={styles.radioLabel}>
+                    <input
+                      className="custom-radio"
+                      type="radio"
+                      name={q.key}
+                      value={num}
+                      checked={form[q.key] === String(num)}
+                      onChange={handleChange}
+                      required
+                      aria-label={`${q.label} – ${num}${num===1 ? " (Don’t Agree)" : num===5 ? " (Strongly Agree)" : ""}`}
+                    />
+                    {num}
+                  </label>
+                ))}
+              </div>
+
+              <span style={{ fontSize: "0.8rem", color: "#666" }}>5 (Strongly Agree)</span>
             </div>
           </div>
         ))}
@@ -242,26 +255,26 @@ const styles = {
   scaleRow: { display: "flex", justifyContent: "center", gap: 18 },
   radioLabel: { display: "flex", flexDirection: "column", alignItems: "center", fontSize: 16, cursor: "pointer", gap: 4 },
   buttonBase: {
-  padding: "0.7rem 2.2rem",
-  borderRadius: 7,
-  fontWeight: 700,
-  fontSize: "1.15rem",
-  backgroundColor: "#4CAF50",
-  color: "#fff",
-  border: "none",
-  cursor: "pointer",
-  transition: "background 0.2s",
-  boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
-},
-buttonFull: { width: "100%", maxWidth: 220 },
-centeredContainer: {
-  position: "fixed",
-  inset: 0,
-  display: "grid",
-  placeItems: "center",
-  textAlign: "center",
-  background: "#fff",
-  padding: "2rem",
-},
-thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem" }
+    padding: "0.7rem 2.2rem",
+    borderRadius: 7,
+    fontWeight: 700,
+    fontSize: "1.15rem",
+    backgroundColor: "#4CAF50",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    transition: "background 0.2s",
+    boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
+  },
+  buttonFull: { width: "100%", maxWidth: 220 },
+  centeredContainer: {
+    position: "fixed",
+    inset: 0,
+    display: "grid",
+    placeItems: "center",
+    textAlign: "center",
+    background: "#fff",
+    padding: "2rem",
+  },
+  thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", textAlign: "center", marginTop: "2rem" }
 };

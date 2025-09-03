@@ -194,6 +194,10 @@ export default function ThirtyDaySurveyForm() {
       <form onSubmit={handleSubmit} style={styles.form}>
         <img src={logo} alt="RCI Logo" style={styles.logo} />
         <h2 style={styles.title}>30 Days After Start of Service Survey</h2>
+        <p style={{ textAlign: "center", marginBottom: 24, fontSize: "0.95rem", color: "#555" }}>
+          Please rate each statement on a scale from 1 to 5, where
+          <strong> 1 = Don’t Agree</strong> and <strong>5 = Strongly Agree</strong>.
+        </p>
 
         {/* Property (read-only if provided via URL) */}
         <div style={{ width: "100%", marginBottom: 16 }}>
@@ -212,26 +216,31 @@ export default function ThirtyDaySurveyForm() {
         </div>
 
         {QUESTIONS.map((q, idx) => (
-          <div key={q.key} style={styles.questionBlock}>
-            <div style={styles.label}>{idx + 1}. {q.label}</div>
-            <div style={styles.scaleRow}>
-              {[1,2,3,4,5].map((num) => (
-                <label key={num} style={styles.radioLabel}>
-                  <input
-                    className="custom-radio"
-                    type="radio"
-                    name={q.key}
-                    value={num}
-                    checked={form[q.key] === String(num)}
-                    onChange={handleChange}
-                    required
-                  />
-                  {num}
-                </label>
-              ))}
-            </div>
-          </div>
+  <div key={q.key} style={styles.questionBlock}>
+    <div style={styles.label}>{idx + 1}. {q.label}</div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
+      <span style={{ fontSize: "0.8rem", color: "#666" }}>1 (Don’t Agree)</span>
+      <div style={styles.scaleRow}>
+        {[1,2,3,4,5].map((num) => (
+          <label key={num} style={styles.radioLabel}>
+            <input
+              className="custom-radio"
+              type="radio"
+              name={q.key}
+              value={num}
+              checked={form[q.key] === String(num)}
+              onChange={handleChange}
+              required
+              aria-label={`${q.label} – ${num}${num===1 ? " (Don’t Agree)" : num===5 ? " (Strongly Agree)" : ""}`}
+            />
+            {num}
+          </label>
         ))}
+      </div>
+      <span style={{ fontSize: "0.8rem", color: "#666" }}>5 (Strongly Agree)</span>
+    </div>
+  </div>
+))}
 
         <button type="submit" disabled={loading} style={styles.button}>
           {loading ? "Submitting..." : "Submit"}
