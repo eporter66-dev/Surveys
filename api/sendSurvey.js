@@ -22,8 +22,15 @@ const SURVEY_LINKS = {
 // tolerant getters + defaults
 const getEmail = (row) =>
   (row['Contact Email'] || row['Email'] || row['Email Address'] || row['email'] || '').trim();
+
 const getName = (row) =>
   (row['Property Name'] || row['Name'] || row['Property'] || row['name'] || 'there').trim();
+
+const getRecordId = (row) => (row['Record ID#'] || row['RecordID'] || '').toString().trim();
+const getAM = (row) => (row['AM Email List'] || '').trim();
+const getRM = (row) => (row['RM Email List'] || '').trim();
+const getDM = (row) => (row['DM Email List'] || '').trim();
+
 
 async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
   const payload = {
@@ -261,28 +268,36 @@ export default async function handler(req, res) {
       const surveyLink = SURVEY_LINKS[type];
       if (!surveyLink) continue; // safety if a CSV exists with no link
 
-      const results = await Promise.allSettled(
+     const results = await Promise.allSettled(
   records.map(async (row) => {
     const email = getEmail(row);
     if (!email) return;
-    const name = getName(row); // <-- this is your property name per your CSVs
 
-    // Build a link with query params so the survey can prefill
-    const surveyUrl = new URL(surveyLink);
-    surveyUrl.searchParams.set("property", name);  // used to prefill the form's Property field
-    surveyUrl.searchParams.set("email", email);    // optional (handy for join/dedupe)
-    surveyUrl.searchParams.set("surveyType", type); // "Thirty" | "Ninety" | "Pre-Renew"
+    const name = getName(row); // Property Name
+    const recordId = getRecordId(row);
+    const am = getAM(row);
+    const rm = getRM(row);
+    const dm = getDM(row);
+
+    const surveyUrl = new URL(SURVEY_LINKS[type]);
+    // existing
+    surveyUrl.searchParams.set("property", name);
+    surveyUrl.searchParams.set("email", email);
+    surveyUrl.searchParams.set("surveyType", type);
+    // new
+    surveyUrl.searchParams.set("recordId", recordId);
+    surveyUrl.searchParams.set("am", am);
+    surveyUrl.searchParams.set("rm", rm);
+    surveyUrl.searchParams.set("dm", dm);
 
     await sgMail.send({
-  to: email,
-  from: 'serviceupdate@rotoloconsultants.com',
-  subject: subjectFor(type),
-  html: emailTemplate({ name, surveyUrl: surveyUrl.toString(), type }),
-  text: textTemplate({ name, surveyUrl: surveyUrl.toString(), type }),
-});
+      to: email,
+      from: 'serviceupdate@rotoloconsultants.com',
+      subject: subjectFor(type),
+      html: emailTemplate({ name, surveyUrl: surveyUrl.toString(), type }),
+      text: textTemplate({ name, surveyUrl: surveyUrl.toString(), type }),
+    });
 
-
-    // 🔁 Non-blocking log
     await logSurveyEmailToQuickbase({ email, name, surveyType: type });
   })
 );
