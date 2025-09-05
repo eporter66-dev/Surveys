@@ -67,9 +67,9 @@ async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
 
 function subjectFor(type) {
   const map = {
-    Thirty:     "30-Day Check-In: How’s our service?",
-    Ninety:     "90-Day Check-In: Your feedback matters",
-    "Pre-Renew":"Quick survey before renewal",
+    Thirty:     "How’s our service?",
+    Ninety:     "Your feedback matters",
+    "Pre-Renew":"Quick survey to see how we're doing!",
   };
   return map[type] || "How’s Our Service? We’d Love Your Feedback!";
 }
@@ -78,7 +78,7 @@ function textTemplate({ name, surveyUrl, type }) {
   const greeting = name && name !== "there" ? `Hi ${name},` : "Hi,";
   return `${greeting}
 
-We’re always working to improve your experience with RCI. When you have a minute, please complete a quick ${type} survey to tell us how we’re doing.
+We’re always working to improve your experience with RCI. When you have a minute, please complete a quick survey to tell us how we’re doing.
 
 Start the survey: ${surveyUrl}
 
@@ -90,9 +90,9 @@ We really appreciate your feedback!
 function emailTemplate({ name, surveyUrl, type }) {
   const greetingName = name && name !== "there" ? name : "there";
   const headlineByType = {
-    Thirty:     "How did your first month with RCI go?",
-    Ninety:     "90 days in, how are we doing?",
-    "Pre-Renew":"How are we doing?",
+    Thirty:     "How is it going with RCI?",
+    Ninety:     "How are we doing so far?",
+    "Pre-Renew":"We appreciate your feedback, how are we doing?",
   }[type] || "How are we doing?";
 
   // Inline CSS w/ table layout for reliability
