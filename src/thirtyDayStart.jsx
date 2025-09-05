@@ -29,6 +29,60 @@ const customRadioStyles = `
 }
 `;
 
+const ctaStyles = `
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .9rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: .2px;
+  color: #fff;
+  background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(46,125,50,.25), 0 2px 6px rgba(0,0,0,.06);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+.cta-button:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 10px 26px rgba(46,125,50,.30), 0 3px 8px rgba(0,0,0,.08);
+  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+}
+.cta-button:active { transform: translateY(0) scale(.99); }
+.cta-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(76,175,80,.28), 0 8px 24px rgba(46,125,50,.25);
+}
+.cta-button svg { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; }
+.cta-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.45) 50%, transparent 100%);
+}
+.cta-button:hover::before { animation: cta-shine 900ms ease-in-out; }
+@keyframes cta-shine {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+`;
+
+if (typeof document !== "undefined" && !document.getElementById("cta-style")) {
+  const style = document.createElement("style");
+  style.id = "cta-style";
+  style.innerHTML = ctaStyles;
+  document.head.appendChild(style);
+}
+
+
 if (typeof document !== "undefined" && !document.getElementById("custom-radio-style")) {
   const style = document.createElement("style");
   style.id = "custom-radio-style";
@@ -38,7 +92,7 @@ if (typeof document !== "undefined" && !document.getElementById("custom-radio-st
 
 const QUESTIONS = [
   { key: "communicationOnboarding", label: "The onboarding process was clear, timely, and well-communicated." },
-  { key: "professionalism", label: "RCI stajjff have been professional and courteous during all interactions." },
+  { key: "professionalism", label: "RCI staff have been professional and courteous during all interactions." },
   { key: "responsiveness", label: "Questions, concerns, or requests have been addressed promptly." },
   { key: "serviceQuality", label: "The appearance and condition of the landscaped areas meet expectations." },
   { key: "scopeAlignment", label: "The services provided align with the expectations outlined in the agreement." },

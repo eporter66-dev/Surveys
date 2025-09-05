@@ -516,3 +516,44 @@
 [2025-09-03 08:39:21] 📡 Querying Quickbase...
 [2025-09-03 08:39:24] 🧪 Processing response...
 [2025-09-03 08:39:24] ✅ Export complete. CSV files written to /home/liz/Desktop/My Projects/quickbase-survey/data
+[2025-09-03 18:04:15] 🚀 Starting full export for table: brtqv9wtt
+[2025-09-03 18:04:15] 🧭 Fetching field metadata…
+[2025-09-03 18:04:16] 🧾 Found 169 fields.
+[2025-09-03 18:04:16] 📡 Creating records cursor (top=1000)…
+[2025-09-03 18:04:16] ❌ No cursor id returned.
+[2025-09-03 18:05:34] 🚀 Starting full export for table: brtqv9wtt
+[2025-09-03 18:05:34] 🧭 Fetching field metadata…
+[2025-09-03 18:05:35] 🧾 Found 169 fields.
+[2025-09-03 18:05:35] 📡 Creating records cursor (top=1000)…
+[2025-09-03 18:05:35] ❌ No cursor id returned.
+[2025-09-03 18:07:58] 🚀 Starting full export for table: brtqv9wtt
+[2025-09-03 18:07:58] 🧭 Fetching field metadata…
+[2025-09-03 18:09:03] 🚀 Starting full export for table: brtqv9wtt
+[2025-09-03 18:09:03] 🧭 Fetching field metadata…
+[2025-09-03 18:09:04] 🧾 Found 169 fields.
+[2025-09-03 18:09:04] 📡 Querying records page 1 (top=1000, skip=0)…
+[2025-09-03 18:09:27] 📦 Page 1: 1000 row(s)
+[2025-09-03 18:11:31] 🚀 Starting full export for table: brtqv9wtt
+[2025-09-03 18:11:31] 🧭 Fetching field metadata…
+[2025-09-03 18:11:32] 🧾 Found 169 fields.
+[2025-09-03 18:11:32] 📡 Querying records page 1 (top=1000, skip=0)…
+[2025-09-03 18:11:40] 📦 Page 1: 1000 row(s)
+[2025-09-03 18:11:41] 📡 Querying records page 2 (top=1000, skip=1000)…
+[2025-09-03 18:11:50] 📦 Page 2: 1000 row(s)
+[2025-09-03 18:11:50] 📡 Querying records page 3 (top=1000, skip=2000)…
+[2025-09-03 18:12:00] 📦 Page 3: 1000 row(s)
+[2025-09-03 18:12:00] 📡 Querying records page 4 (top=1000, skip=3000)…
+[2025-09-03 18:12:06] 📦 Page 4: 460 row(s)
+[2025-09-03 18:12:06] 📡 Querying records page 5 (top=1000, skip=4000)…
+[2025-09-03 18:12:06] ✅ No more rows. Finished.
+[2025-09-03 18:12:06] 🎉 Export complete: 3460 row(s) written.
+[2025-09-03 18:12:06] 📄 File: /home/liz/Desktop/My Projects/quickbase-survey/data/full_export.csv
+[2025-09-03 18:16:01] 🚀 Starting full export for table: br5yuwq5i
+[2025-09-03 18:16:01] 🧭 Fetching field metadata…
+[2025-09-03 18:16:02] 🧾 Found 85 fields.
+[2025-09-03 18:16:02] 📡 Querying records page 1 (top=1000, skip=0)…
+[2025-09-03 18:16:08] 📦 Page 1: 257 row(s)
+[2025-09-03 18:16:08] 📡 Querying records page 2 (top=1000, skip=1000)…
+[2025-09-03 18:16:09] ✅ No more rows. Finished.
+[2025-09-03 18:16:09] 🎉 Export complete: 257 row(s) written.
+[2025-09-03 18:16:09] 📄 File: /home/liz/Desktop/My Projects/quickbase-survey/data/full_employee_export.csv
