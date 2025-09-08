@@ -93,7 +93,7 @@ function emailTemplate({ name, surveyUrl, type }) {
     Thirty:     "How is it going with RCI?",
     Ninety:     "How are we doing so far?",
     "Pre-Renew":"We appreciate your feedback, how are we doing?",
-  }[type] || "How are we doing?";
+  }|| "How are we doing?";
 
   // Inline CSS w/ table layout for reliability
   return `<!doctype html>
@@ -186,7 +186,7 @@ function emailTemplate({ name, surveyUrl, type }) {
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr><td class="card">
                     <p class="muted">
-                      Click the button below to open your ${type} survey. It’s mobile-friendly and only a few quick questions.
+                      Click the button below to open your survey. It’s mobile-friendly and only a few quick questions.
                     </p>
                   </td></tr>
                 </table>

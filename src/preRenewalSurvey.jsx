@@ -161,7 +161,7 @@ export default function PreRenewalSurveyForm() {
     <div style={styles.outer}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <img src={logo} alt="RCI Logo" style={styles.logo} />
-        <h2 style={styles.title}>Pre-Renewal Satisfaction Survey</h2>
+        <h2 style={styles.title}>Quality Assurance Survey</h2>
         <p style={{ textAlign: "center", marginBottom: 24, fontSize: "0.95rem", color: "#555" }}>
           Please rate each statement on a scale from 1 to 5, where
           <strong> 1 = Don’t Agree</strong> and <strong>5 = Strongly Agree</strong>.
