@@ -46,7 +46,7 @@ async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
     ],
   };
 
-  const res = await fetch(`https://${process.env.QUICKBASE_REALM}/v1/records`, {
+  fetch('https://api.quickbase.com/v1/records', {
     method: "POST",
     headers: {
       "Authorization": `QB-USER-TOKEN ${process.env.QUICKBASE_TOKEN}`,
