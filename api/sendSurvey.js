@@ -34,19 +34,18 @@ const getDM = (row) => (row['DM Email List'] || '').trim();
 
 async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
   const payload = {
-    to: process.env.QB_TABLE_ID, // You must set this env var
+    to: process.env.QB_TABLE_ID,
     data: [
       {
-        // Replace field IDs (e.g., "6", "7", "8") with your actual Quickbase field IDs
         "6": { value: email },
         "7": { value: name },
         "8": { value: surveyType },
-        "9": { value: new Date().toISOString() }, // Optional: timestamp
+        "9": { value: new Date().toISOString() },
       },
     ],
   };
 
-  fetch('https://api.quickbase.com/v1/records', {
+  const response = await fetch('https://api.quickbase.com/v1/records', {
     method: "POST",
     headers: {
       "Authorization": `QB-USER-TOKEN ${process.env.QUICKBASE_TOKEN}`,
@@ -56,12 +55,13 @@ async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text();
+  if (!response.ok) {
+    const errorText = await response.text();
     console.error("Quickbase logging failed:", errorText);
     // Don't throw – we don't want to block emails
   }
 }
+
 
 // --- helpers: subject + html + text templates ------------------------------
 
