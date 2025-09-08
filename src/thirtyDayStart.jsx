@@ -300,13 +300,7 @@ export default function ThirtyDaySurveyForm() {
         <button type="submit" disabled={loading} style={styles.button}>
           {loading ? "Submitting..." : "Submit"}
         </button>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ ...styles.button, marginTop: "1rem", backgroundColor: "#888" }}
-        >
-          Cancel / Back
-        </button>
+        
 
         {/* Optional: show a tiny footnote of what we captured (for debugging) */}
         {/* <pre style={{ fontSize: 12, opacity: 0.6 }}>{JSON.stringify({ qEmail, qSurveyType, qRecordId, qAM, qRM, qDM }, null, 2)}</pre> */}

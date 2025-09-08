@@ -170,7 +170,7 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
     <div style={styles.outer}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <img src={logo} alt="RCI Logo" style={styles.logo} />
-        <h2 style={styles.title}>90-Day Satisfaction Survey</h2>
+        <h2 style={styles.title}>Quality Assurance Survey</h2>
         <p style={{ textAlign: "center", marginBottom: 24, fontSize: "0.95rem", color: "#555" }}>
            Please rate each statement on a scale from 1 to 5, where
           <strong> 1 = Don’t Agree</strong> and <strong>5 = Strongly Agree</strong>.
@@ -254,13 +254,7 @@ export default function NinetyDaySurveyForm({ onSubmit }) {
         <button type="submit" disabled={loading} style={styles.button}>
           {loading ? "Submitting..." : "Submit"}
         </button>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ ...styles.button, marginTop: "1rem", backgroundColor: "#888" }}
-        >
-          Cancel / Back
-        </button>
+       
       </form>
     </div>
   );

@@ -232,13 +232,7 @@ export default function PreRenewalSurveyForm() {
         <button type="submit" disabled={loading} style={{ ...styles.buttonBase, width: "100%", maxWidth: 220, marginTop: "1.2rem" }}>
           {loading ? "Submitting..." : "Submit"}
         </button>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ ...styles.buttonBase, width: "100%", maxWidth: 220, marginTop: "1rem", backgroundColor: "#888" }}
-        >
-          Cancel / Back
-        </button>
+        
       </form>
     </div>
   );
