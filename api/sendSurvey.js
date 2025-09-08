@@ -301,6 +301,11 @@ export default async function handler(req, res) {
     await logSurveyEmailToQuickbase({ email, name, surveyType: type });
   })
 );
+results.forEach((r, i) => {
+  if (r.status === 'rejected') {
+    console.error(`❌ Failed to send email for row ${i}:`, r.reason);
+  }
+});
 
         
 
