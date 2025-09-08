@@ -175,7 +175,6 @@ function emailTemplate({ name, surveyUrl, type }) {
             <!-- Hero copy -->
             <tr>
               <td class="hero">
-                <h1 class="headline">${headlineByType}</h1>
                 <p class="sub">Hi ${greetingName}, your input helps us serve you better. This survey takes just a minute.</p>
               </td>
             </tr>
