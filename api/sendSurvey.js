@@ -34,7 +34,7 @@ const getDM = (row) => (row['DM Email List'] || '').trim();
 
 async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
   const payload = {
-    to: process.env.QB_SURVEY_LOG_TABLE_ID, // You must set this env var
+    to: process.env.QB_TABLE_ID, // You must set this env var
     data: [
       {
         // Replace field IDs (e.g., "6", "7", "8") with your actual Quickbase field IDs
@@ -46,11 +46,11 @@ async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
     ],
   };
 
-  const res = await fetch(`https://${process.env.Quickbase_Realm}/v1/records`, {
+  const res = await fetch(`https://${process.env.QUICKBASE_REALM}/v1/records`, {
     method: "POST",
     headers: {
-      "Authorization": `QB-USER-TOKEN ${process.env.Quickbase_Token}`,
-      "QB-Realm-Hostname": process.env.Quickbase_Realm,
+      "Authorization": `QB-USER-TOKEN ${process.env.QUICKBASE_TOKEN}`,
+      "QB-Realm-Hostname": process.env.QUICKBASE_REALM,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
