@@ -189,7 +189,7 @@ export default function PreRenewalSurveyForm() {
 
             {/* Scale with end labels */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
-              <span style={{ fontSize: "0.8rem", color: "#666" }}>1 (Don’t Agree)</span>
+              
 
               <div style={styles.scaleRow}>
                 {[1, 2, 3, 4, 5].map((num) => (
@@ -209,7 +209,7 @@ export default function PreRenewalSurveyForm() {
                 ))}
               </div>
 
-              <span style={{ fontSize: "0.8rem", color: "#666" }}>5 (Strongly Agree)</span>
+              
             </div>
           </div>
         ))}

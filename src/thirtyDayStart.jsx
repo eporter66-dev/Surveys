@@ -251,7 +251,7 @@ export default function ThirtyDaySurveyForm() {
         <h2 style={styles.title}>Quality Assurance Survey</h2>
         <p style={{ textAlign: "center", marginBottom: 24, fontSize: "0.95rem", color: "#555" }}>
           Please rate each statement on a scale from 1 to 5, where
-          <strong> 1 = Don’t Agree</strong> and <strong>5 = Strongly Agree</strong>.
+          <strong> 1 = Strongly Disagree</strong> and <strong>5 = Strongly Agree</strong>.
         </p>
 
         {/* Property (read-only if provided via URL) */}
@@ -274,7 +274,7 @@ export default function ThirtyDaySurveyForm() {
   <div key={q.key} style={styles.questionBlock}>
     <div style={styles.label}>{idx + 1}. {q.label}</div>
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
-      <span style={{ fontSize: "0.8rem", color: "#666" }}>1 (Don’t Agree)</span>
+      
       <div style={styles.scaleRow}>
         {[1,2,3,4,5].map((num) => (
           <label key={num} style={styles.radioLabel}>
@@ -292,7 +292,7 @@ export default function ThirtyDaySurveyForm() {
           </label>
         ))}
       </div>
-      <span style={{ fontSize: "0.8rem", color: "#666" }}>5 (Strongly Agree)</span>
+      
     </div>
   </div>
 ))}
