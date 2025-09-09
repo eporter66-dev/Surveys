@@ -164,7 +164,7 @@ export default function PreRenewalSurveyForm() {
         <h2 style={styles.title}>Quality Assurance Survey</h2>
         <p style={{ textAlign: "center", marginBottom: 24, fontSize: "0.95rem", color: "#555" }}>
           Please rate each statement on a scale from 1 to 5, where
-          <strong> 1 = Don’t Agree</strong> and <strong>5 = Strongly Agree</strong>.
+          <strong> 1 = Strongly Disagree</strong> and <strong>5 = Strongly Agree</strong>.
         </p>
 
         {/* Property (read-only if provided via URL) */}
