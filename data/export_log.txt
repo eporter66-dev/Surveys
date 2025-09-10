@@ -569,3 +569,18 @@
 [2025-09-08 15:16:05] 📡 Querying Quickbase...
 [2025-09-08 15:16:13] 🧪 Processing response...
 [2025-09-08 15:16:13] ✅ Export complete. CSV files written to /home/liz/Desktop/My Projects/quickbase-survey/data
+[2025-09-09 15:16:02] 🚀 Starting full export for table: brtqv9wtt
+[2025-09-09 15:16:02] 🧭 Fetching field metadata…
+[2025-09-09 15:16:03] 🧾 Found 169 fields.
+[2025-09-09 15:16:03] 📡 Querying records page 1 (top=1000, skip=0)…
+[2025-09-09 15:16:10] 📦 Page 1: 1000 row(s)
+[2025-09-09 15:16:10] 📡 Querying records page 2 (top=1000, skip=1000)…
+[2025-09-09 15:16:20] 📦 Page 2: 1000 row(s)
+[2025-09-09 15:16:21] 📡 Querying records page 3 (top=1000, skip=2000)…
+[2025-09-09 15:16:31] 📦 Page 3: 1000 row(s)
+[2025-09-09 15:16:31] 📡 Querying records page 4 (top=1000, skip=3000)…
+[2025-09-09 15:16:36] 📦 Page 4: 464 row(s)
+[2025-09-09 15:16:36] 📡 Querying records page 5 (top=1000, skip=4000)…
+[2025-09-09 15:16:37] ✅ No more rows. Finished.
+[2025-09-09 15:16:37] 🎉 Export complete: 3464 row(s) written.
+[2025-09-09 15:16:37] 📄 File: /home/liz/Desktop/My Projects/quickbase-survey/data/full_export.csv

@@ -7,16 +7,16 @@ import sgMail from '@sendgrid/mail';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const SURVEY_CSV_FILES = {
-  Thirty: 'thirty.csv',
-  Ninety: 'ninety.csv',
-  'Pre-Renew': 'prerenew.csv',
+  One:   'thirty.csv',
+  Two:   'ninety.csv',
+  Three: 'prerenew.csv',
 };
 
 
 const SURVEY_LINKS = {
-  Thirty: 'https://surveys-five.vercel.app/survey-30day',
-  Ninety: 'https://surveys-five.vercel.app/survey-90day',
-  'Pre-Renew': 'https://surveys-five.vercel.app/survey-prerenewal',
+  One:   'https://surveys-five.vercel.app/survey-one',
+  Two:   'https://surveys-five.vercel.app/survey-two',
+  Three: 'https://surveys-five.vercel.app/survey-three',
 };
 
 // tolerant getters + defaults
@@ -67,9 +67,9 @@ async function logSurveyEmailToQuickbase({ email, name, surveyType }) {
 
 function subjectFor(type) {
   const map = {
-    Thirty:     "How’s our service?",
-    Ninety:     "Your feedback matters",
-    "Pre-Renew":"Quick survey to see how we're doing!",
+    One:     "How’s our service?",
+    Two:     "Your feedback matters",
+    Three:   "Quick survey to see how we're doing!",
   };
   return map[type] || "How’s Our Service? We’d Love Your Feedback!";
 }
@@ -90,9 +90,9 @@ We really appreciate your feedback!
 function emailTemplate({ name, surveyUrl, type }) {
   const greetingName = name && name !== "there" ? name : "there";
   const headlineByType = {
-    Thirty:     "How is it going with RCI?",
-    Ninety:     "How are we doing so far?",
-    "Pre-Renew":"We appreciate your feedback, how are we doing?",
+    One:     "How is it going with RCI?",
+    Two:     "How are we doing so far?",
+    Three:   "We appreciate your feedback, how are we doing?",
   }|| "How are we doing?";
 
   // Inline CSS w/ table layout for reliability

@@ -71,13 +71,13 @@ export default function App() {
   return (
     <Routes>
        <Route path="/" element={<SurveyHome />} />
-      <Route path="/survey-30day" element={
+      <Route path="/survey-one" element={
   <ThirtyDaySurveyForm onSubmit={buildSurveySubmitter("thirtyDay")} />
 } />
-<Route path="/survey-90day" element={
+<Route path="/survey-two" element={
   <NinetyDaySurveyForm onSubmit={buildSurveySubmitter("ninetyDay")} />
 } />
-<Route path="/survey-prerenewal" element={
+<Route path="/survey-three" element={
   <PreRenewalSurveyForm onSubmit={buildSurveySubmitter("preRenewal")} />
 } />
 

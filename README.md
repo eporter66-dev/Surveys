@@ -18,6 +18,12 @@ Automates delivery of customer satisfaction surveys (30-Day, 90-Day, Pre-Renewal
   - `prerenew.csv`
   - `yearly.csv`
 
+  Survey Route Index:
+  
+  - survey-one: thirty day
+  - survey-two: ninety day
+  - survey-three: pre-renewal
+
 ---
 
 ## Project Structure
