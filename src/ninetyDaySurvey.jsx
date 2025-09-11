@@ -38,7 +38,7 @@ if (typeof document !== "undefined" && !document.getElementById("custom-radio-st
 
 const QUESTIONS = [
   { key: "overallServiceQuality", label: "The overall quality of landscape maintenance has consistently met or exceeded expectations." },
-  { key: "reliabilityOfService",   label: "RCI has consistently delivered services according to the agreed schedule." },
+  { key: "reliabilityOfService",   label: "RCI has consistently delivered services according to the agreed upon schedule of services (SOS)." },
   { key: "attentionToDetail",      label: "Crews have shown thoroughness and attention to detail during maintenance visits." },
   { key: "communicationFollowThrough", label: "RCI communicates effectively and follows through on requests, concerns, and recommendations." },
   { key: "professionalismOfStaff", label: "RCI staff continue to represent the company with professionalism and courtesy." },
