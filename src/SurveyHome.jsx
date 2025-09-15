@@ -9,17 +9,17 @@ export default function SurveyHome() {
     {
       title: "30-Day After Start of Service",
       description: "Feedback after the first month of service.",
-      route: "/survey-30day",
+      route: "/survey-one",
     },
     {
       title: "90-Day Satisfaction Survey",
       description: "Check-in to assess mid-term performance.",
-      route: "/survey-90day",
+      route: "/survey-two",
     },
     {
       title: "Pre-Renewal Satisfaction Survey",
       description: "Evaluate satisfaction before contract renewal.",
-      route: "/survey-prerenewal",
+      route: "/survey-three",
     },
   ];
 
