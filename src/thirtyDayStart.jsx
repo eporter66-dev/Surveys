@@ -205,7 +205,7 @@ export default function ThirtyDaySurveyForm() {
               borderRadius: 7,
               fontWeight: 700,
               fontSize: "1.05rem",
-              backgroundColor: "#4CAF50",
+              backgroundColor: "#42764B",
               color: "#fff",
               border: "none",
               cursor: "pointer",
@@ -322,5 +322,5 @@ const styles = {
   radioLabel: { display: "flex", flexDirection: "column", alignItems: "center", fontSize: 16, cursor: "pointer", gap: 4 },
   button: { padding: "0.7rem 2.2rem", borderRadius: 7, fontWeight: 700, fontSize: "1.15rem", marginTop: "1.2rem", backgroundColor: "#4CAF50", color: "#fff", border: "none", cursor: "pointer", width: "100%", maxWidth: 220, transition: "background 0.2s", boxShadow: "0 2px 8px 0 rgba(44,62,80,0.08)" },
   centeredContainer: { minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", textAlign: "center" },
-  thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#4CAF50", marginTop: "2rem" },
+  thankYou: { fontWeight: 600, fontSize: "1.35rem", color: "#42764B", marginTop: "2rem" },
 };
