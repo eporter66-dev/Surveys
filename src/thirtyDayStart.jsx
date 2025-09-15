@@ -229,7 +229,7 @@ export default function ThirtyDaySurveyForm() {
     <img
       src="/requestsIcon.png"
       alt="Submit a Service Request"
-      style={{ width: 56, height: 56, display: "block" }}
+      style={{ width: 84, height: 84, display: "block" }}
     />
 
   </a>
