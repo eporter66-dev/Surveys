@@ -197,31 +197,42 @@ export default function ThirtyDaySurveyForm() {
           </div>
 
           {/* Optional: give them a one-click path to request service, carrying the same context */}
-           <a
+          <div
+  style={{
+    marginTop: "2rem",
+    padding: "1rem 1.5rem",
+    border: "1px solid #ddd",
+    borderRadius: 12,
+    backgroundColor: "#f9f9f9",
+    maxWidth: 420,
+    textAlign: "center",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+  }}
+>
+  <div style={{ marginBottom: 16, fontSize: "1rem", color: "#333" }}>
+    Would you like to request additional services? Our estimators will get back to you in no time.
+  </div>
+
+  <a
     href={serviceRequestUrl}
+    title="Submit a Service Request"
     style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 10,
-      padding: "0.6rem 1.4rem",
-      borderRadius: 8,
-      fontWeight: 600,
-      fontSize: "1rem",
+      display: "inline-block",
       backgroundColor: "#4CAF50",
-      color: "#fff",
-      border: "none",
-      textDecoration: "none",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+      padding: 12,
+      borderRadius: "50%",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       transition: "background 0.2s",
     }}
   >
     <img
       src="/requestsIcon.png"
-      alt="Service Request Icon"
-      style={{ width: 20, height: 20 }}
+      alt="Submit a Service Request"
+      style={{ width: 36, height: 36, display: "block" }}
     />
-    Submit a Service Request
   </a>
+</div>
+
 {/*
           <button
             style={{
