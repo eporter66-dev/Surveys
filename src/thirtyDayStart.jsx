@@ -192,30 +192,36 @@ export default function ThirtyDaySurveyForm() {
     return (
       <div style={{ position:"fixed", inset:0, display:"grid", placeItems:"center", textAlign:"center", background:"#fff", padding:"2rem" }}>
         <div>
-          <div style={{ fontWeight:600, fontSize:"1.35rem", color:"#4CAF50" }}>
+          <div style={{ fontWeight:600, fontSize:"1.35rem", color:"#42764B" }}>
             Thank you for your feedback!
           </div>
 
           {/* Optional: give them a one-click path to request service, carrying the same context */}
-          <a
-            href={serviceRequestUrl}
-            style={{
-              display: "inline-block",
-              padding: "0.7rem 2.2rem",
-              borderRadius: 7,
-              fontWeight: 700,
-              fontSize: "1.05rem",
-              backgroundColor: "#42764B",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              marginTop: "1rem",
-              boxShadow: "0 2px 8px rgba(44,62,80,0.08)",
-              textDecoration: "none",
-            }}
-          >
-            Submit a Service Request
-          </a>
+           <a
+    href={serviceRequestUrl}
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "0.6rem 1.4rem",
+      borderRadius: 8,
+      fontWeight: 600,
+      fontSize: "1rem",
+      backgroundColor: "#4CAF50",
+      color: "#fff",
+      border: "none",
+      textDecoration: "none",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+      transition: "background 0.2s",
+    }}
+  >
+    <img
+      src="/requestsIcon.png"
+      alt="Service Request Icon"
+      style={{ width: 20, height: 20 }}
+    />
+    Submit a Service Request
+  </a>
 {/*
           <button
             style={{
