@@ -213,23 +213,25 @@ export default function ThirtyDaySurveyForm() {
     Would you like to request additional services? Our estimators will get back to you in no time.
   </div>
 
-  <a
-    href={serviceRequestUrl}
-    title="Submit a Service Request"
-    style={{
-      display: "inline-block",
-      backgroundColor: "#4CAF50",
-      padding: 12,
-      borderRadius: "50%",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-      transition: "background 0.2s",
-    }}
-  >
+ <a
+   href={serviceRequestUrl}
+   title="Submit a Service Request"
+   style={{
+     display: "inline-block",
+     backgroundColor: "#4CAF50",
+     padding: 16,
+     borderRadius: "50%",
+     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+     transition: "background 0.2s",
+   }}
+ >
+
     <img
       src="/requestsIcon.png"
       alt="Submit a Service Request"
-      style={{ width: 36, height: 36, display: "block" }}
+      style={{ width: 56, height: 56, display: "block" }}
     />
+
   </a>
 </div>
 
