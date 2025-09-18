@@ -184,35 +184,48 @@ export default function PreRenewalSurveyForm() {
         </div>
 
         {QUESTIONS.map((q, idx) => (
-          <div key={q.key} style={styles.questionBlock}>
-            <div style={styles.label}>{idx + 1}. {q.label}</div>
+  <div key={q.key} style={styles.questionBlock}>
+    <div style={styles.label}>{idx + 1}. {q.label}</div>
 
-            {/* Scale with end labels */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
-              
-
-              <div style={styles.scaleRow}>
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <label key={num} style={styles.radioLabel}>
-                    <input
-                      className="custom-radio"
-                      type="radio"
-                      name={q.key}
-                      value={num}
-                      checked={form[q.key] === String(num)}
-                      onChange={handleChange}
-                      required
-                      aria-label={`${q.label} – ${num}${num===1 ? " (Don’t Agree)" : num===5 ? " (Strongly Agree)" : ""}`}
-                    />
-                    {num}
-                  </label>
-                ))}
-              </div>
-
-              
-            </div>
-          </div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
+      <div style={styles.scaleRow}>
+        {[1, 2, 3, 4, 5].map((num) => (
+          idx === 0 ? ( // 👉 Only for Question 1
+            <label key={num} style={styles.radioLabel}>
+              <input
+                className="custom-radio"
+                type="radio"
+                name={q.key}
+                value={num}
+                checked={form[q.key] === String(num)}
+                onChange={handleChange}
+                required
+                aria-label={`${q.label} – ${num}`}
+              />
+              <span style={{ marginTop: 6, fontSize: "0.85rem", color: "#444" }}>
+                {num}
+              </span>
+            </label>
+          ) : (
+            <label key={num} style={{ cursor: "pointer" }}>
+              <input
+                className="custom-radio"
+                type="radio"
+                name={q.key}
+                value={num}
+                checked={form[q.key] === String(num)}
+                onChange={handleChange}
+                required
+                aria-label={`${q.label} – ${num}`}
+              />
+            </label>
+          )
         ))}
+      </div>
+    </div>
+  </div>
+))}
+
 
         {/* Suggestions */}
         <div style={{ width: "100%", marginTop: 24 }}>
